@@ -1,0 +1,124 @@
+# LA Geography Layer Configuration
+# Official sources for Los Angeles administrative and physical boundaries
+# Last updated: 2025-10-19
+
+# =============================================================================
+# LAPD BOUNDARIES
+# =============================================================================
+lapd_bureaus:
+  source: arcgis
+  url: https://services5.arcgis.com/7nsPwEMP38bSkCjy/ArcGIS/rest/services/LAPD_Bureaus/FeatureServer/0
+  description: LAPD Bureaus (4 bureaus - Central, South, Valley, West)
+  expected_count: 4
+  geometry_type: polygon
+  id_field: bureau
+  name_field: name
+  source_org: LAPD GIS Mapping
+
+lapd_divisions:
+  source: arcgis
+  url: https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/LAPD_Division/FeatureServer/0
+  description: LAPD Divisions (21 divisions)
+  expected_count: 21
+  geometry_type: polygon
+  id_field: prec
+  name_field: aprec
+  source_org: LAPD GIS Mapping
+
+lapd_reporting_districts:
+  source: arcgis
+  url: https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/LAPD_Reporting_District/FeatureServer/0
+  description: LAPD Reporting Districts (~1,191 districts)
+  expected_count: 1191
+  expected_tolerance: 10  # allow +/- 10 features
+  geometry_type: polygon
+  id_field: repdist
+  name_field: repdist
+  source_org: LAPD GIS Mapping
+
+# =============================================================================
+# LA CITY BOUNDARIES
+# =============================================================================
+la_city_boundary:
+  source: arcgis
+  url: https://maps.lacity.org/lahub/rest/services/Boundaries/MapServer/7
+  description: Official City of Los Angeles boundary
+  expected_count: 1
+  geometry_type: polygon
+  id_field: null
+  name_field: null
+  source_org: LA City Bureau of Engineering
+
+la_city_neighborhoods:
+  source: arcgis
+  url: https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/LA_Times_Neighborhoods/FeatureServer/0
+  description: LA Times Neighborhood Boundaries (officially adopted by LA City)
+  expected_count: 114
+  geometry_type: polygon
+  id_field: objectid
+  name_field: name
+  source_org: LA City / LA Times
+
+la_city_neighborhood_councils:
+  source: arcgis
+  url: https://maps.lacity.org/lahub/rest/services/Boundaries/MapServer/18
+  description: Certified Neighborhood Councils (~99 councils)
+  expected_count: 99
+  expected_tolerance: 5
+  geometry_type: polygon
+  id_field: null  # TBD
+  name_field: null  # TBD
+  source_org: LA City Department of Neighborhood Empowerment
+
+# =============================================================================
+# LA COUNTY BOUNDARIES
+# =============================================================================
+la_county_boundary:
+  source: arcgis
+  url: https://public.gis.lacounty.gov/public/rest/services/LACounty_Dynamic/Political_Boundaries/MapServer/18
+  description: LA County boundary (includes neighboring counties, filter by TYPE='LA County')
+  expected_count: 1
+  geometry_type: polygon
+  id_field: null
+  name_field: name
+  source_org: LA County
+  filter: TYPE = 'LA County'  # Use this to get only LA County polygon
+
+la_county_cities:
+  source: arcgis
+  url: https://public.gis.lacounty.gov/public/rest/services/LACounty_Dynamic/Political_Boundaries/MapServer/19
+  description: LA County cities and unincorporated areas
+  expected_count: 88  # After processing: ~88 cities + unincorporated communities
+  expected_tolerance: 10
+  geometry_type: polygon
+  id_field: null
+  name_field: city_name
+  source_org: LA County Department of Regional Planning
+  notes: |
+    Raw layer has 347 features (fragmented cities + water features like piers/breakwaters)
+    Processing: Filter feat_type == 'Land', then dissolve by city_name
+    Field city_type distinguishes 'City' vs 'Unincorporated'
+    Many unincorporated areas dissolve into single "Unincorporated" feature
+
+# =============================================================================
+# FREEWAYS / HIGHWAYS
+# =============================================================================
+la_freeways:
+  source: arcgis
+  url: https://caltrans-gis.dot.ca.gov/arcgis/rest/services/chhighway/national_highway_system/FeatureServer/0
+  description: Interstates and State Highways in LA County
+  expected_count: null  # Will vary after clipping and filtering
+  geometry_type: line
+  id_field: objectid
+  name_field: routeid
+  source_org: Caltrans
+  clip_to: la_county_boundary
+  filter: nhs_type == 'INTERSTATE' OR routeid contains 'SHS'
+  notes: |
+    Processing steps:
+    1. Clip statewide layer to LA County boundary
+    2. Filter to Interstates (nhs_type == 'INTERSTATE')
+    3. Filter to State Highways (routeid contains 'SHS')
+    Raw NHS_TYPE categories: INTERSTATE, O-NHS, NISR, MSC, IC, ISC, M21PA
+    After filtering: Primarily INTERSTATE and O-NHS (State Highway System routes)
+
