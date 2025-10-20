@@ -1,5 +1,5 @@
 
-# la-geo planning
+LA Geography planning doc
 
 _Last updated: 2025-10-19_
 

@@ -1,6 +1,6 @@
-# LA Geography
+# LA geography
 
-A dependable repository of Los Angeles administrative and physical boundary layers for reproducible analysis and mapping.
+A growing and dependable repository of Los Angeles administrative and physical boundary layers for reproducible analysis and mapping.
 
 ## Purpose
 
@@ -13,19 +13,19 @@ Provides clean, versioned, well-documented boundary layers for LA City & County 
 
 ## Available Layers
 
-### LAPD Geographies
+### LAPD boundary layers
 - **Bureaus** (4): Central, South, Valley, West
-- **Divisions** (21): Central, Rampart, Southwest, etc.
+- **Divisions** (21): Pacific, Rampart, Central, etc.
 - **Reporting Districts** (~1,191): Finest-grained LAPD geography
 
-### LA City
+### LA city
 - **City Boundary**: Official city limits
 - **Neighborhoods**: LA Times boundaries (officially adopted)
 - **Neighborhood Councils**: ~99 certified councils
 
 ### LA County
-- **County Boundary**: LA County limits
-- **Cities & Communities**: 88 cities + unincorporated areas
+- **County boundary**: LA County limits
+- **Cities & communities**: 88 cities + unincorporated areas
 
 ### Transportation
 - **Freeways**: National Highway System clipped to LA County
@@ -71,15 +71,15 @@ All layers are publicly accessible via HTTPS. Use these URLs directly in your GI
 
 | Layer | URL | Size |
 |-------|-----|------|
-| **LAPD Bureaus** | https://stilesdata.com/la-geography/lapd_bureaus.geojson | 0.55 MB |
-| **LAPD Divisions** | https://stilesdata.com/la-geography/lapd_divisions.geojson | 0.84 MB |
-| **LAPD Reporting Districts** | https://stilesdata.com/la-geography/lapd_reporting_districts.geojson | 6.50 MB |
-| **LA City Boundary** | https://stilesdata.com/la-geography/la_city_boundary.geojson | 0.40 MB |
-| **LA City Neighborhoods** | https://stilesdata.com/la-geography/la_city_neighborhoods.geojson | 0.95 MB |
-| **LA City Neighborhood Councils** | https://stilesdata.com/la-geography/la_city_neighborhood_councils.geojson | 2.80 MB |
-| **LA County Boundary** | https://stilesdata.com/la-geography/la_county_boundary.geojson | 2.80 MB |
-| **LA County Cities** | https://stilesdata.com/la-geography/la_county_cities.geojson | 13.53 MB |
-| **LA Freeways** | https://stilesdata.com/la-geography/la_freeways.geojson | 1.62 MB |
+| **LAPD bureaus** | https://stilesdata.com/la-geography/lapd_bureaus.geojson | 0.55 MB |
+| **LAPD divisions** | https://stilesdata.com/la-geography/lapd_divisions.geojson | 0.84 MB |
+| **LAPD reporting districts** | https://stilesdata.com/la-geography/lapd_reporting_districts.geojson | 6.50 MB |
+| **LA city boundary** | https://stilesdata.com/la-geography/la_city_boundary.geojson | 0.40 MB |
+| **LA city neighborhoods** | https://stilesdata.com/la-geography/la_city_neighborhoods.geojson | 0.95 MB |
+| **LA city neighborhood councils** | https://stilesdata.com/la-geography/la_city_neighborhood_councils.geojson | 2.80 MB |
+| **LA County boundary** | https://stilesdata.com/la-geography/la_county_boundary.geojson | 2.80 MB |
+| **LA County cities** | https://stilesdata.com/la-geography/la_county_cities.geojson | 13.53 MB |
+| **LA freeways (interstates and state highways)** | https://stilesdata.com/la-geography/la_freeways.geojson | 1.62 MB |
 | **Metadata** | https://stilesdata.com/la-geography/metadata.json | JSON |
 
 **Quick Load Examples:**
@@ -108,10 +108,10 @@ export MY_AWS_SECRET_ACCESS_KEY="your-secret"
 export MY_PERSONAL_PROFILE="personal"  # For clarity (optional)
 ```
 
-## Directory Structure
+## Directory structure
 
 ```
-la-geo/
+la-geography/
 ├── README.md              # This file
 ├── PLANNING.md            # Detailed planning document
 ├── config/
@@ -129,7 +129,7 @@ la-geo/
     └── test_validate.py
 ```
 
-## Output Format
+## Output format
 
 All layers in `data/standard/` include:
 
@@ -153,8 +153,8 @@ Layer endpoints are defined in `config/layers.yml` with:
 
 ## Data Sources
 
-- **LA City GeoHub**: https://geohub.lacity.org/
-- **LA County GIS Hub**: https://egis-lacounty.hub.arcgis.com/
+- **LA city geo hub**: https://geohub.lacity.org/
+- **LA County GIS hub**: https://egis-lacounty.hub.arcgis.com/
 - **Caltrans**: https://caltrans-gis.dot.ca.gov/
 
 All sources are official government portals with open data licenses.
@@ -195,4 +195,3 @@ Data sources retain their original licenses (typically public domain or CC0). Se
 ## Contact
 
 See [PLANNING.md](PLANNING.md) for detailed methodology and design decisions.
-
