@@ -1,4 +1,4 @@
-# la-geo
+# LA Geography
 
 A dependable repository of Los Angeles administrative and physical boundary layers for reproducible analysis and mapping.
 
@@ -65,10 +65,40 @@ make s3-list
 python scripts/s3_sync.py upload --layer la_city_boundary
 ```
 
-**Public URLs:**
-- Base: `https://stilesdata.com/la-geography/`
-- Example: `https://stilesdata.com/la-geography/la_city_boundary.geojson`
-- Metadata: `https://stilesdata.com/la-geography/metadata.json`
+**Direct Download URLs:**
+
+All layers are publicly accessible via HTTPS. Use these URLs directly in your GIS tools, notebooks, or scripts:
+
+| Layer | URL | Size |
+|-------|-----|------|
+| **LAPD Bureaus** | https://stilesdata.com/la-geography/lapd_bureaus.geojson | 0.55 MB |
+| **LAPD Divisions** | https://stilesdata.com/la-geography/lapd_divisions.geojson | 0.84 MB |
+| **LAPD Reporting Districts** | https://stilesdata.com/la-geography/lapd_reporting_districts.geojson | 6.50 MB |
+| **LA City Boundary** | https://stilesdata.com/la-geography/la_city_boundary.geojson | 0.40 MB |
+| **LA City Neighborhoods** | https://stilesdata.com/la-geography/la_city_neighborhoods.geojson | 0.95 MB |
+| **LA City Neighborhood Councils** | https://stilesdata.com/la-geography/la_city_neighborhood_councils.geojson | 2.80 MB |
+| **LA County Boundary** | https://stilesdata.com/la-geography/la_county_boundary.geojson | 2.80 MB |
+| **LA County Cities** | https://stilesdata.com/la-geography/la_county_cities.geojson | 13.53 MB |
+| **LA Freeways** | https://stilesdata.com/la-geography/la_freeways.geojson | 1.62 MB |
+| **Metadata** | https://stilesdata.com/la-geography/metadata.json | JSON |
+
+**Quick Load Examples:**
+```python
+# Python with GeoPandas
+import geopandas as gpd
+la_city = gpd.read_file('https://stilesdata.com/la-geography/la_city_boundary.geojson')
+
+# R with sf
+library(sf)
+la_city <- st_read('https://stilesdata.com/la-geography/la_city_boundary.geojson')
+```
+
+```javascript
+// JavaScript with Leaflet
+fetch('https://stilesdata.com/la-geography/la_city_boundary.geojson')
+  .then(response => response.json())
+  .then(data => L.geoJSON(data).addTo(map));
+```
 
 **Environment Setup:**
 To upload layers, set these environment variables:
