@@ -1,11 +1,11 @@
 # LA geography
 
-A growing and dependable repository of Los Angeles administrative and physical boundary layers for reproducible analysis and mapping.
+A dependable and clean repository of Los Angeles administrative and physical boundary layers for reproducible analysis and easy mapping. 
 
 ## Purpose
 
-Provides clean, versioned, well-documented boundary layers for LA City & County with:
-- **Official sources** from LA City GeoHub and LA County GIS Hub
+Provides clean, versioned, well-documented boundary layers for LA city & County with:
+- **Official sources** from open data portals maintained by LA city and LA County
 - **Standardized outputs** in WGS84 (EPSG:4326)
 - **Area calculations** using California Albers (EPSG:3310) for accuracy
 - **Normalized schemas** with consistent lower_snake_case naming
@@ -82,7 +82,7 @@ All layers are publicly accessible via HTTPS. Use these URLs directly in your GI
 | **LA freeways (interstates and state highways)** | https://stilesdata.com/la-geography/la_freeways.geojson | 1.62 MB |
 | **Metadata** | https://stilesdata.com/la-geography/metadata.json | JSON |
 
-**Quick Load Examples:**
+**Quick examples:**
 ```python
 # Python with GeoPandas
 import geopandas as gpd
@@ -94,10 +94,14 @@ la_city <- st_read('https://stilesdata.com/la-geography/la_city_boundary.geojson
 ```
 
 ```javascript
-// JavaScript with Leaflet
-fetch('https://stilesdata.com/la-geography/la_city_boundary.geojson')
-  .then(response => response.json())
-  .then(data => L.geoJSON(data).addTo(map));
+// JavaScript with D3
+d3.json('https://stilesdata.com/la-geography/la_city_boundary.geojson')
+  .then(data => {
+    const projection = d3.geoMercator().fitSize([width, height], data);
+    const path = d3.geoPath().projection(projection);
+    svg.selectAll('path').data(data.features)
+       .enter().append('path').attr('d', path);
+  });
 ```
 
 **Environment Setup:**
