@@ -182,21 +182,78 @@ la_metro_lines:
     TYPE field distinguishes 'Rail' vs 'Bus'
 
 # =============================================================================
-# PUBLIC SAFETY
+# PUBLIC SAFETY - FIRE
 # =============================================================================
-# NOTE: Commented out - LA County dynamic MapServer service returning HTML instead of JSON
-# Will need to find alternative endpoint or wait for service to stabilize
-# la_county_public_safety_stations:
+lacofd_station_boundaries:
+  source: arcgis
+  url: https://services.arcgis.com/RmCCgQtiZLDCtblq/arcgis/rest/services/LACoFD_Fire_Station_Boundaries/FeatureServer/0
+  description: LA County Fire Department station boundaries (175 stations)
+  expected_count: 175
+  expected_tolerance: 10
+  geometry_type: polygon
+  id_field: stanum
+  name_field: stanum
+  source_org: LA County Fire Department
+  notes: |
+    175 full-time fire station service areas (excludes seasonal LA County Fair station)
+    Includes battalion (BATTID), division (DIV), and region fields
+    Last updated: April 2021
+
+lacofd_station_locations:
+  source: arcgis
+  url: https://services.arcgis.com/RmCCgQtiZLDCtblq/arcgis/rest/services/LACoFD_Fire_Station_Locations/FeatureServer/0
+  description: LA County Fire Department station locations (176 stations)
+  expected_count: 176
+  expected_tolerance: 5
+  geometry_type: point
+  id_field: stanum
+  name_field: stanum
+  source_org: LA County Fire Department
+  notes: |
+    176 fire station point locations (175 regular + 1 seasonal at LA County Fair)
+    Includes addresses, battalion, division, and region
+    Data as of October 2020
+
+# NOTE: Commented out - need correct REST endpoint from OpenData portal
+# lafd_districts:
 #   source: arcgis
-#   url: https://public.gis.lacounty.gov/public/rest/services/LACounty_Dynamic/Administrative_Boundaries/MapServer/9
-#   description: Public safety station jurisdictions (Sheriff, LAPD, city police)
+#   url: https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/LAFD_Battalions/FeatureServer/3
+#   description: LA Fire Department district boundaries
 #   expected_count: null  # TBD - will determine after first fetch
 #   expected_tolerance: 20
 #   geometry_type: polygon
 #   id_field: objectid
-#   name_field: name
-#   source_org: LA County
+#   name_field: district
+#   source_org: LA Fire Department
 #   notes: |
-#     Shows which law enforcement agency has jurisdiction in each area
-#     Useful for understanding LAPD vs Sheriff vs other city police boundaries
+#     LAFD operational districts with district, battalion, and division IDs
+#     Different from LA County Fire Department
+#     OpenData URL: https://data-lahub.opendata.arcgis.com/datasets/691409b93f8d4d9e81f9a593c53ed069_3
+
+# =============================================================================
+# PUBLIC SAFETY - POLICE
+# =============================================================================
+lapd_station_locations:
+  source: arcgis
+  url: https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/LAPD_Police_Stations/FeatureServer/0
+  description: LAPD police station locations (21 stations)
+  expected_count: 21
+  expected_tolerance: 3
+  geometry_type: point
+  id_field: prec
+  name_field: division
+  source_org: LAPD
+  notes: |
+    Point locations of 21 LAPD division stations
+    Includes division name, location address, and precinct number
+    Complements the existing LAPD division boundaries layer
+
+# NOTE: Commented out - LA County dynamic MapServer service returning HTML instead of JSON
+# Requires authentication - not publicly accessible
+# la_county_public_safety_jurisdictions:
+#   source: arcgis
+#   url: https://public.gis.lacounty.gov/public/rest/services/LACounty_Dynamic/Administrative_Boundaries/MapServer/9
+#   description: Public safety jurisdictions (Sheriff, LAPD, city police)
+#   expected_count: null
+#   geometry_type: polygon
 

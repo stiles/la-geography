@@ -13,10 +13,11 @@ Provides clean, versioned, well-documented boundary layers for LA city & County 
 
 ## Available Layers
 
-### LAPD boundary layers
+### LAPD (police)
 - **Bureaus** (4): Central, South, Valley, West
 - **Divisions** (21): Pacific, Rampart, Central, etc.
 - **Reporting Districts** (~1,191): Finest-grained LAPD geography
+- **Station Locations** (21): Police station addresses and locations
 
 ### LA city
 - **City Boundary**: Official city limits
@@ -29,6 +30,10 @@ Provides clean, versioned, well-documented boundary layers for LA city & County 
 - **County boundary**: LA County limits
 - **Cities & communities**: 88 cities + unincorporated areas
 - **School Districts**: 85 school districts (Elementary, High School, and Unified)
+
+### LA County Fire Department
+- **Station Boundaries** (174): Fire station service areas
+- **Station Locations** (174): Fire station addresses and locations
 
 ### Transportation
 - **Freeways**: Interstates and state highways clipped to LA County
@@ -78,6 +83,7 @@ All layers are publicly accessible via HTTPS. Use these URLs directly in your GI
 | **LAPD bureaus** | https://stilesdata.com/la-geography/lapd_bureaus.geojson | 0.55 MB |
 | **LAPD divisions** | https://stilesdata.com/la-geography/lapd_divisions.geojson | 0.84 MB |
 | **LAPD reporting districts** | https://stilesdata.com/la-geography/lapd_reporting_districts.geojson | 6.50 MB |
+| **LAPD station locations** | https://stilesdata.com/la-geography/lapd_station_locations.geojson | 0.01 MB |
 | **LA city boundary** | https://stilesdata.com/la-geography/la_city_boundary.geojson | 0.40 MB |
 | **LA city neighborhoods** | https://stilesdata.com/la-geography/la_city_neighborhoods.geojson | 0.95 MB |
 | **LA city neighborhood councils** | https://stilesdata.com/la-geography/la_city_neighborhood_councils.geojson | 2.80 MB |
@@ -88,6 +94,8 @@ All layers are publicly accessible via HTTPS. Use these URLs directly in your GI
 | **LA County school districts** | https://stilesdata.com/la-geography/la_county_school_districts.geojson | 4.30 MB |
 | **LA freeways (interstates and state highways)** | https://stilesdata.com/la-geography/la_freeways.geojson | 1.62 MB |
 | **LA Metro lines** | https://stilesdata.com/la-geography/la_metro_lines.geojson | 0.44 MB |
+| **LA County Fire Dept station boundaries** | https://stilesdata.com/la-geography/lacofd_station_boundaries.geojson | 5.10 MB |
+| **LA County Fire Dept station locations** | https://stilesdata.com/la-geography/lacofd_station_locations.geojson | 0.10 MB |
 | **Metadata** | https://stilesdata.com/la-geography/metadata.json | JSON |
 
 **Quick examples:**
