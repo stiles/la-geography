@@ -24,6 +24,7 @@ import json
 
 import boto3
 from botocore.exceptions import ClientError, NoCredentialsError
+import yaml
 
 # S3 Configuration
 S3_BUCKET = "stilesdata.com"
@@ -31,19 +32,24 @@ S3_PREFIX = "la-geography"
 
 # Standard layers directory
 STANDARD_DIR = Path("data/standard")
+CONFIG_FILE = Path("config/layers.yml")
 
-# Layer list
-LAYERS = [
-    "lapd_bureaus",
-    "lapd_divisions",
-    "lapd_reporting_districts",
-    "la_city_boundary",
-    "la_city_neighborhoods",
-    "la_city_neighborhood_councils",
-    "la_county_boundary",
-    "la_county_cities",
-    "la_freeways",
-]
+
+def get_layers_from_config():
+    """
+    Read layer names from config/layers.yml to ensure we're always in sync.
+    Falls back to discovering .geojson files if config is not available.
+    """
+    if CONFIG_FILE.exists():
+        with open(CONFIG_FILE) as f:
+            config = yaml.safe_load(f)
+            return list(config.keys())
+    else:
+        # Fallback: discover from filesystem
+        return [
+            p.stem for p in STANDARD_DIR.glob("*.geojson")
+            if p.stem != "metadata"
+        ]
 
 
 def get_s3_client():
@@ -122,7 +128,7 @@ def upload_layers(layer_name: str = None):
     """
     s3_client = get_s3_client()
 
-    layers_to_upload = [layer_name] if layer_name else LAYERS
+    layers_to_upload = [layer_name] if layer_name else get_layers_from_config()
 
     print(f"\n{'='*60}")
     print(f"Uploading to S3: s3://{S3_BUCKET}/{S3_PREFIX}/")
@@ -162,7 +168,7 @@ def download_layers(layer_name: str = None):
     """
     s3_client = get_s3_client()
 
-    layers_to_download = [layer_name] if layer_name else LAYERS
+    layers_to_download = [layer_name] if layer_name else get_layers_from_config()
 
     print(f"\n{'='*60}")
     print(f"Downloading from S3: s3://{S3_BUCKET}/{S3_PREFIX}/")
@@ -190,6 +196,7 @@ def download_layers(layer_name: str = None):
 def upload_metadata(s3_client):
     """
     Upload metadata JSON file with layer inventory and URLs.
+    Automatically includes all layers from config/layers.yml.
     """
     metadata = {
         "name": "LA Geography Boundaries",
@@ -200,7 +207,7 @@ def upload_metadata(s3_client):
         "layers": {},
     }
 
-    for layer in LAYERS:
+    for layer in get_layers_from_config():
         local_path = STANDARD_DIR / f"{layer}.geojson"
         if local_path.exists():
             file_size_mb = local_path.stat().st_size / 1024 / 1024
