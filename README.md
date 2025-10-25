@@ -192,15 +192,18 @@ la-geography/
 ├── docs/                  # Documentation
 │   ├── CENSUS_FIELDS.md   # Census variable definitions
 │   ├── CENSUS_SETUP.md    # Census API key setup
+│   ├── CENSUS_ANALYSIS.md # Analysis examples
 │   └── CENSUS_TESTING.md  # Testing guide
 ├── scripts/
-│   ├── fetch_boundaries.py    # Fetch boundary layers
-│   ├── fetch_census.py        # Fetch Census data
-│   ├── apportion_census.py    # Apportion demographics
+│   ├── fetch_boundaries.py        # Fetch boundary layers
+│   ├── fetch_census.py            # Fetch Census data
+│   ├── apportion_census.py        # Apportion demographics
 │   ├── validate_apportionment.py  # Validate results
-│   ├── process_raw.py         # Process complex layers
-│   ├── geo_utils.py           # Shared utilities
-│   └── s3_sync.py             # Upload/download from S3
+│   ├── analyze_demographics.py    # Analyze demographics (comprehensive)
+│   ├── census_stats.py            # Quick demographics stats
+│   ├── process_raw.py             # Process complex layers
+│   ├── geo_utils.py               # Shared utilities
+│   └── s3_sync.py                 # Upload/download from S3
 └── tests/
     └── test_validate.py
 ```
@@ -325,10 +328,34 @@ Each `*_demographics.parquet` file includes:
 
 **Note:** These are 2020 Census hard counts (no margins of error). For income, education, or median age, you'll need American Community Survey (ACS) data.
 
+### Analysis & Examples
+
+Quick statistics for any layer:
+```bash
+# Show demographics summary
+python scripts/census_stats.py lapd_divisions
+
+# Top 10 features by population
+python scripts/census_stats.py la_city_neighborhoods --top 10
+```
+
+Comprehensive analysis:
+```bash
+# Analyze all layers
+python scripts/analyze_demographics.py
+
+# Analyze specific layer
+python scripts/analyze_demographics.py --layer lapd_bureaus
+
+# Generate markdown report
+python scripts/analyze_demographics.py --save-report
+```
+
 ### Documentation
 
 - **Setup guide:** [CENSUS_SETUP.md](docs/CENSUS_SETUP.md)
 - **Field definitions:** [CENSUS_FIELDS.md](docs/CENSUS_FIELDS.md)
+- **Analysis examples:** [CENSUS_ANALYSIS.md](docs/CENSUS_ANALYSIS.md)
 - **Testing guide:** [CENSUS_TESTING.md](docs/CENSUS_TESTING.md)
 
 ## Roadmap
