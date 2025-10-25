@@ -32,6 +32,7 @@ Provides clean, versioned, well-documented boundary layers for LA city & County 
 
 ### Transportation
 - **Freeways**: Interstates and state highways clipped to LA County
+- **Metro Lines**: LA Metro rail lines and bus rapid transit (17 lines)
 
 ## Quick Start
 
@@ -86,6 +87,7 @@ All layers are publicly accessible via HTTPS. Use these URLs directly in your GI
 | **LA County cities** | https://stilesdata.com/la-geography/la_county_cities.geojson | 13.53 MB |
 | **LA County school districts** | https://stilesdata.com/la-geography/la_county_school_districts.geojson | 4.30 MB |
 | **LA freeways (interstates and state highways)** | https://stilesdata.com/la-geography/la_freeways.geojson | 1.62 MB |
+| **LA Metro lines** | https://stilesdata.com/la-geography/la_metro_lines.geojson | 0.44 MB |
 | **Metadata** | https://stilesdata.com/la-geography/metadata.json | JSON |
 
 **Quick examples:**

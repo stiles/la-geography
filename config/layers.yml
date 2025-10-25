@@ -163,3 +163,40 @@ la_freeways:
     Raw NHS_TYPE categories: INTERSTATE, O-NHS, NISR, MSC, IC, ISC, M21PA
     After filtering: Primarily INTERSTATE and O-NHS (State Highway System routes)
 
+# =============================================================================
+# TRANSIT
+# =============================================================================
+la_metro_lines:
+  source: arcgis
+  url: https://services.arcgis.com/RmCCgQtiZLDCtblq/arcgis/rest/services/MTA_Metro_Lines/FeatureServer/0
+  description: LA Metro rail and bus rapid transit lines
+  expected_count: 17
+  expected_tolerance: 5
+  geometry_type: line
+  id_field: objectid
+  name_field: label
+  source_org: LA Metro (MTA)
+  notes: |
+    Includes Metro rail lines (A, B, C, D, E, K) and bus rapid transit (G, J)
+    STATUS field indicates 'Existing' or 'Construction'
+    TYPE field distinguishes 'Rail' vs 'Bus'
+
+# =============================================================================
+# PUBLIC SAFETY
+# =============================================================================
+# NOTE: Commented out - LA County dynamic MapServer service returning HTML instead of JSON
+# Will need to find alternative endpoint or wait for service to stabilize
+# la_county_public_safety_stations:
+#   source: arcgis
+#   url: https://public.gis.lacounty.gov/public/rest/services/LACounty_Dynamic/Administrative_Boundaries/MapServer/9
+#   description: Public safety station jurisdictions (Sheriff, LAPD, city police)
+#   expected_count: null  # TBD - will determine after first fetch
+#   expected_tolerance: 20
+#   geometry_type: polygon
+#   id_field: objectid
+#   name_field: name
+#   source_org: LA County
+#   notes: |
+#     Shows which law enforcement agency has jurisdiction in each area
+#     Useful for understanding LAPD vs Sheriff vs other city police boundaries
+
