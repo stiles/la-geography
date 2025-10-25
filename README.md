@@ -22,13 +22,16 @@ Provides clean, versioned, well-documented boundary layers for LA city & County 
 - **City Boundary**: Official city limits
 - **Neighborhoods**: LA Times boundaries (officially adopted)
 - **Neighborhood Councils**: ~99 certified councils
+- **Council Districts**: 15 city council districts
+- **Parks**: 561 parks and recreation facilities
 
 ### LA County
 - **County boundary**: LA County limits
 - **Cities & communities**: 88 cities + unincorporated areas
+- **School Districts**: 85 school districts (Elementary, High School, and Unified)
 
 ### Transportation
-- **Freeways**: National Highway System clipped to LA County
+- **Freeways**: Interstates and state highways clipped to LA County
 
 ## Quick Start
 
@@ -77,8 +80,11 @@ All layers are publicly accessible via HTTPS. Use these URLs directly in your GI
 | **LA city boundary** | https://stilesdata.com/la-geography/la_city_boundary.geojson | 0.40 MB |
 | **LA city neighborhoods** | https://stilesdata.com/la-geography/la_city_neighborhoods.geojson | 0.95 MB |
 | **LA city neighborhood councils** | https://stilesdata.com/la-geography/la_city_neighborhood_councils.geojson | 2.80 MB |
+| **LA city council districts** | https://stilesdata.com/la-geography/la_city_council_districts.geojson | 1.40 MB |
+| **LA city parks** | https://stilesdata.com/la-geography/la_city_parks.geojson | 5.00 MB |
 | **LA County boundary** | https://stilesdata.com/la-geography/la_county_boundary.geojson | 2.80 MB |
 | **LA County cities** | https://stilesdata.com/la-geography/la_county_cities.geojson | 13.53 MB |
+| **LA County school districts** | https://stilesdata.com/la-geography/la_county_school_districts.geojson | 4.30 MB |
 | **LA freeways (interstates and state highways)** | https://stilesdata.com/la-geography/la_freeways.geojson | 1.62 MB |
 | **Metadata** | https://stilesdata.com/la-geography/metadata.json | JSON |
 
