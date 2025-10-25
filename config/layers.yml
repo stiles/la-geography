@@ -307,3 +307,56 @@ lapd_station_locations:
 #   expected_count: null
 #   geometry_type: polygon
 
+# =============================================================================
+# CENSUS DATA
+# =============================================================================
+census:
+  vintage: 2020
+  state_fips: "06"  # California
+  county_fips: "037"  # Los Angeles County
+  geography_level: block
+  
+  # 2020 Decennial Census Tables (PL 94-171 redistricting file)
+  tables:
+    P1:
+      description: Race
+      variables:
+        P1_001N: Total population
+    
+    P2:
+      description: Hispanic or Latino, and Not Hispanic or Latino by Race
+      variables:
+        P2_001N: Total population
+        P2_002N: Hispanic or Latino
+        P2_003N: Not Hispanic or Latino
+        P2_005N: White alone (not Hispanic or Latino)
+        P2_006N: Black or African American alone (not Hispanic or Latino)
+        P2_007N: American Indian and Alaska Native alone (not Hispanic or Latino)
+        P2_008N: Asian alone (not Hispanic or Latino)
+        P2_009N: Native Hawaiian and Other Pacific Islander alone (not Hispanic or Latino)
+        P2_010N: Some Other Race alone (not Hispanic or Latino)
+        P2_011N: Two or More Races (not Hispanic or Latino)
+    
+    H1:
+      description: Occupancy Status
+      variables:
+        H1_001N: Total housing units
+        H1_002N: Occupied
+        H1_003N: Vacant
+  
+  # Simplified column names for output
+  column_mapping:
+    P1_001N: pop_total
+    P2_002N: pop_hispanic
+    P2_003N: pop_not_hispanic
+    P2_005N: pop_white_nh
+    P2_006N: pop_black_nh
+    P2_007N: pop_aian_nh
+    P2_008N: pop_asian_nh
+    P2_009N: pop_nhpi_nh
+    P2_010N: pop_other_nh
+    P2_011N: pop_two_or_more_nh
+    H1_001N: housing_total
+    H1_002N: housing_occupied
+    H1_003N: housing_vacant
+

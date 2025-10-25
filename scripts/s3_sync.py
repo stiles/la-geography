@@ -2,12 +2,15 @@
 """
 S3 Sync for LA Geography Boundaries
 
-Upload/download processed boundary layers to/from S3 for public distribution.
+Upload/download processed boundary layers and demographics to/from S3 for public distribution.
 
 Usage:
-    python scripts/s3_sync.py upload [--layer LAYER_NAME]
-    python scripts/s3_sync.py download [--layer LAYER_NAME]
+    python scripts/s3_sync.py upload [--layer LAYER_NAME] [--no-demographics]
+    python scripts/s3_sync.py download [--layer LAYER_NAME] [--no-demographics]
     python scripts/s3_sync.py list
+
+By default, both boundaries (.geojson) and demographics (.parquet) files are synced.
+Use --no-demographics to sync only boundaries.
 
 Environment Variables:
     MY_AWS_ACCESS_KEY_ID     - AWS access key
@@ -122,9 +125,13 @@ def download_file(s3_client, s3_key: str, local_path: Path) -> bool:
         return False
 
 
-def upload_layers(layer_name: str = None):
+def upload_layers(layer_name: str = None, include_demographics: bool = True):
     """
     Upload one or all processed layers to S3.
+    
+    Args:
+        layer_name: Specific layer to upload, or None for all
+        include_demographics: Also upload demographics files if they exist
     """
     s3_client = get_s3_client()
 
@@ -138,6 +145,11 @@ def upload_layers(layer_name: str = None):
     fail_count = 0
 
     for layer in layers_to_upload:
+        # Skip census config entry
+        if layer == 'census':
+            continue
+            
+        # Upload GeoJSON layer
         local_path = STANDARD_DIR / f"{layer}.geojson"
 
         if not local_path.exists():
@@ -153,18 +165,34 @@ def upload_layers(layer_name: str = None):
             fail_count += 1
 
         print()
+        
+        # Upload demographics file if it exists and demographics are enabled
+        if include_demographics:
+            demo_path = STANDARD_DIR / f"{layer}_demographics.parquet"
+            if demo_path.exists():
+                demo_s3_key = f"{S3_PREFIX}/{layer}_demographics.parquet"
+                if upload_file(s3_client, demo_path, demo_s3_key):
+                    success_count += 1
+                    print(f"  ✓ Also uploaded demographics")
+                else:
+                    fail_count += 1
+                print()
 
     # Upload metadata
-    upload_metadata(s3_client)
+    upload_metadata(s3_client, include_demographics)
 
     print(f"{'='*60}")
     print(f"Upload complete: {success_count} succeeded, {fail_count} failed")
     print(f"{'='*60}\n")
 
 
-def download_layers(layer_name: str = None):
+def download_layers(layer_name: str = None, include_demographics: bool = True):
     """
     Download one or all processed layers from S3.
+    
+    Args:
+        layer_name: Specific layer to download, or None for all
+        include_demographics: Also download demographics files if they exist
     """
     s3_client = get_s3_client()
 
@@ -178,6 +206,11 @@ def download_layers(layer_name: str = None):
     fail_count = 0
 
     for layer in layers_to_download:
+        # Skip census config entry
+        if layer == 'census':
+            continue
+            
+        # Download GeoJSON layer
         s3_key = f"{S3_PREFIX}/{layer}.geojson"
         local_path = STANDARD_DIR / f"{layer}.geojson"
 
@@ -187,16 +220,39 @@ def download_layers(layer_name: str = None):
             fail_count += 1
 
         print()
+        
+        # Try to download demographics file if enabled
+        if include_demographics:
+            demo_s3_key = f"{S3_PREFIX}/{layer}_demographics.parquet"
+            demo_path = STANDARD_DIR / f"{layer}_demographics.parquet"
+            
+            # Check if demographics file exists in S3
+            try:
+                s3_client.head_object(Bucket=S3_BUCKET, Key=demo_s3_key)
+                # File exists, download it
+                if download_file(s3_client, demo_s3_key, demo_path):
+                    success_count += 1
+                    print(f"  ✓ Also downloaded demographics")
+                else:
+                    fail_count += 1
+                print()
+            except ClientError:
+                # Demographics file doesn't exist, skip silently
+                pass
 
     print(f"{'='*60}")
     print(f"Download complete: {success_count} succeeded, {fail_count} failed")
     print(f"{'='*60}\n")
 
 
-def upload_metadata(s3_client):
+def upload_metadata(s3_client, include_demographics: bool = True):
     """
     Upload metadata JSON file with layer inventory and URLs.
     Automatically includes all layers from config/layers.yml.
+    
+    Args:
+        s3_client: Boto3 S3 client
+        include_demographics: Include demographics files in metadata
     """
     metadata = {
         "name": "LA Geography Boundaries",
@@ -208,13 +264,31 @@ def upload_metadata(s3_client):
     }
 
     for layer in get_layers_from_config():
+        # Skip census config entry
+        if layer == 'census':
+            continue
+            
         local_path = STANDARD_DIR / f"{layer}.geojson"
         if local_path.exists():
             file_size_mb = local_path.stat().st_size / 1024 / 1024
-            metadata["layers"][layer] = {
+            layer_info = {
                 "url": f"https://{S3_BUCKET}/{S3_PREFIX}/{layer}.geojson",
                 "size_mb": round(file_size_mb, 2),
             }
+            
+            # Add demographics info if file exists
+            if include_demographics:
+                demo_path = STANDARD_DIR / f"{layer}_demographics.parquet"
+                if demo_path.exists():
+                    demo_size_mb = demo_path.stat().st_size / 1024 / 1024
+                    layer_info["demographics"] = {
+                        "url": f"https://{S3_BUCKET}/{S3_PREFIX}/{layer}_demographics.parquet",
+                        "size_mb": round(demo_size_mb, 2),
+                        "source": "2020 Decennial Census",
+                        "note": "Area-weighted apportionment from Census blocks"
+                    }
+            
+            metadata["layers"][layer] = layer_info
 
     # Save locally
     metadata_path = STANDARD_DIR / "metadata.json"
@@ -288,14 +362,22 @@ def main():
         "--layer",
         help="Specific layer name (optional, defaults to all layers)",
     )
+    
+    parser.add_argument(
+        "--no-demographics",
+        action="store_true",
+        help="Skip demographics files (only upload/download boundaries)",
+    )
 
     args = parser.parse_args()
+    
+    include_demographics = not args.no_demographics
 
     try:
         if args.action == "upload":
-            upload_layers(args.layer)
+            upload_layers(args.layer, include_demographics)
         elif args.action == "download":
-            download_layers(args.layer)
+            download_layers(args.layer, include_demographics)
         elif args.action == "list":
             list_layers()
 
