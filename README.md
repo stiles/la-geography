@@ -31,9 +31,10 @@ Provides clean, versioned, well-documented boundary layers for LA city & County 
 - **Cities & communities**: 88 cities + unincorporated areas
 - **School Districts**: 85 school districts (Elementary, High School, and Unified)
 
-### LA County Fire Department
-- **Station Boundaries** (174): Fire station service areas
-- **Station Locations** (174): Fire station addresses and locations
+### Fire Departments
+- **LA County Fire - Station Boundaries** (174): LA County Fire station service areas
+- **LA County Fire - Station Locations** (174): LA County Fire station addresses  
+- **LA Fire Dept - Station Boundaries** (102): LAFD (city) station service areas
 
 ### Transportation
 - **Freeways**: Interstates and state highways clipped to LA County
@@ -96,6 +97,7 @@ All layers are publicly accessible via HTTPS. Use these URLs directly in your GI
 | **LA Metro lines** | https://stilesdata.com/la-geography/la_metro_lines.geojson | 0.44 MB |
 | **LA County Fire Dept station boundaries** | https://stilesdata.com/la-geography/lacofd_station_boundaries.geojson | 5.10 MB |
 | **LA County Fire Dept station locations** | https://stilesdata.com/la-geography/lacofd_station_locations.geojson | 0.10 MB |
+| **LA Fire Dept (city) station boundaries** | https://stilesdata.com/la-geography/lafd_station_boundaries.geojson | 1.70 MB |
 | **Metadata** | https://stilesdata.com/la-geography/metadata.json | JSON |
 
 **Quick examples:**

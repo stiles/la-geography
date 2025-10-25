@@ -124,6 +124,36 @@ la_county_cities:
     Field city_type distinguishes 'City' vs 'Unincorporated'
     Many unincorporated areas dissolve into single "Unincorporated" feature
 
+# NOTE: Commented out - LA County dynamic MapServer returning HTML instead of JSON
+# la_county_supervisor_districts:
+#   source: arcgis
+#   url: https://public.gis.lacounty.gov/public/rest/services/LACounty_Dynamic/Political_Boundaries/MapServer/26
+#   description: LA County Board of Supervisors districts (5 districts, 2021 boundaries)
+#   expected_count: 5
+#   geometry_type: polygon
+#   id_field: district
+#   name_field: label
+#   source_org: LA County Registrar-Recorder/County Clerk
+#   notes: |
+#     2021 supervisorial district boundaries adopted December 15, 2021
+#     Based on 2020 census redistricting
+#     Five supervisorial districts representing LA County
+
+# NOTE: Commented out - LA County dynamic MapServer returning HTML instead of JSON
+# la_county_zip_codes:
+#   source: arcgis
+#   url: https://public.gis.lacounty.gov/public/rest/services/LACounty_Dynamic/Administrative_Boundaries/MapServer/5
+#   description: ZIP Code boundaries in LA County
+#   expected_count: null  # TBD - will determine after first fetch
+#   expected_tolerance: 50
+#   geometry_type: polygon
+#   id_field: zipcode
+#   name_field: zipcode
+#   source_org: LA County
+#   notes: |
+#     ZIP Code Tabulation Areas (ZCTAs) for LA County
+#     Useful for demographic and spatial analysis
+
 # =============================================================================
 # SCHOOLS
 # =============================================================================
@@ -213,6 +243,22 @@ lacofd_station_locations:
     176 fire station point locations (175 regular + 1 seasonal at LA County Fair)
     Includes addresses, battalion, division, and region
     Data as of October 2020
+
+lafd_station_boundaries:
+  source: arcgis
+  url: https://services.arcgis.com/xsiPoFK0f7RrxF0D/ArcGIS/rest/services/Find_Station_Final/FeatureServer/1
+  description: LA Fire Department station boundaries (102 stations, city only)
+  expected_count: 102
+  expected_tolerance: 10
+  geometry_type: polygon
+  id_field: precinctid
+  name_field: name
+  source_org: LA Fire Department
+  notes: |
+    LAFD station service areas (City of LA, distinct from LA County Fire)
+    Filtered to valid fire stations only (excludes erroneous county polygons)
+    Area range: 1.28 - 14.99 sq mi per station
+    Data as of April 2021
 
 # NOTE: Commented out - need correct REST endpoint from OpenData portal
 # lafd_districts:
