@@ -124,20 +124,24 @@ la_county_cities:
     Field city_type distinguishes 'City' vs 'Unincorporated'
     Many unincorporated areas dissolve into single "Unincorporated" feature
 
-# NOTE: Commented out - LA County dynamic MapServer returning HTML instead of JSON
+# NOTE: Commented out - LA County MapServer returns HTML "Loading" page when accessed programmatically
+# Works in browser but requires session/authentication for programmatic access
 # la_county_supervisor_districts:
 #   source: arcgis
-#   url: https://public.gis.lacounty.gov/public/rest/services/LACounty_Dynamic/Political_Boundaries/MapServer/26
-#   description: LA County Board of Supervisors districts (5 districts, 2021 boundaries)
+#   url: https://arcgis.gis.lacounty.gov/arcgis/rest/services/LACounty_Dynamic/Political_Boundaries/MapServer/27
+#   description: LA County Board of Supervisors districts (5 districts, current)
 #   expected_count: 5
 #   geometry_type: polygon
 #   id_field: district
 #   name_field: label
 #   source_org: LA County Registrar-Recorder/County Clerk
 #   notes: |
-#     2021 supervisorial district boundaries adopted December 15, 2021
-#     Based on 2020 census redistricting
+#     Current supervisorial district boundaries
 #     Five supervisorial districts representing LA County
+#     Layer ID 27 on arcgis.gis.lacounty.gov (not public.gis subdomain)
+#     Alternative endpoints tried:
+#     - MapServer/26 on public.gis.lacounty.gov (failed)
+#     - MapServer/27 on arcgis.gis.lacounty.gov (browser-only)
 
 # NOTE: Commented out - LA County dynamic MapServer returning HTML instead of JSON
 # la_county_zip_codes:
