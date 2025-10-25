@@ -1,6 +1,6 @@
 # LA geography
 
-A dependable and clean repository of Los Angeles administrative and physical boundary layers for reproducible analysis and easy mapping. 
+A dependable and clean repository of Los Angeles administrative and physical boundary layers for reproducible analysis and easy mapping. Optionally enrich any layer with 2020 Census demographics.
 
 ## Purpose
 
@@ -10,8 +10,11 @@ Provides clean, versioned, well-documented boundary layers for LA city & County 
 - **Area calculations** using California Albers (EPSG:3310) for accuracy
 - **Normalized schemas** with consistent lower_snake_case naming
 - **Quality validation** with geometry checks and expected feature counts
+- **Optional demographics** from 2020 Census via block-level apportionment
 
 ## Available Layers
+
+All layers available as clean GeoJSON with standardized fields, area calculations, and validation.
 
 ### LAPD (police)
 - **Bureaus** (4): Central, South, Valley, West
@@ -40,6 +43,32 @@ Provides clean, versioned, well-documented boundary layers for LA city & County 
 - **Freeways**: Interstates and state highways clipped to LA County
 - **Metro Lines**: LA Metro rail lines and bus rapid transit (17 lines)
 
+---
+
+## **+ Demographics Available**
+
+**All polygon layers can be enriched with 2020 Census demographics** (population, race/ethnicity, housing) through reproducible block-level apportionment.
+
+**Option 1: Download pre-computed demographics** (fastest, no API key needed)
+```bash
+# Download all layers + demographics from S3
+make s3-download
+```
+
+**Option 2: Compute demographics yourself** (reproducible pipeline)
+```bash
+# Get free API key from census.gov, then:
+export CENSUS_API_KEY="your-key"
+make fetch-census
+make apportion-census
+```
+
+**Output:** Each layer gets a companion `*_demographics.parquet` file with population totals, race/ethnicity breakdowns, and housing counts from the 2020 Census.
+
+**→** See [Census Demographics](#census-demographics-enrichment) section below for details.
+
+---
+
 ## Quick Start
 
 ```bash
@@ -59,20 +88,23 @@ make export
 
 ## S3 Storage
 
-Processed layers are published to S3 for public access:
+Processed layers and demographics are published to S3 for public access:
 
 ```bash
-# Upload all layers to S3
+# Upload all layers + demographics to S3
 make s3-upload
 
-# Download layers from S3 (if you just need the data)
+# Download layers + demographics from S3 (if you just need the data)
 make s3-download
 
 # List available layers in S3
 make s3-list
 
-# Upload a single layer
+# Upload a single layer (with its demographics if available)
 python scripts/s3_sync.py upload --layer la_city_boundary
+
+# Upload boundaries only (skip demographics)
+python scripts/s3_sync.py upload --no-demographics
 ```
 
 **Direct Download URLs:**
@@ -100,15 +132,29 @@ All layers are publicly accessible via HTTPS. Use these URLs directly in your GI
 | **LA Fire Dept (city) station boundaries** | https://stilesdata.com/la-geography/lafd_station_boundaries.geojson | 1.70 MB |
 | **Metadata** | https://stilesdata.com/la-geography/metadata.json | JSON |
 
+**Demographics files:**  
+Each polygon layer also has a companion demographics file available:
+- Pattern: `https://stilesdata.com/la-geography/{layer}_demographics.parquet`
+- Example: `https://stilesdata.com/la-geography/lapd_divisions_demographics.parquet`
+- Size: Typically < 50 KB per layer
+
 **Quick examples:**
 ```python
 # Python with GeoPandas
 import geopandas as gpd
-la_city = gpd.read_file('https://stilesdata.com/la-geography/la_city_boundary.geojson')
+import pandas as pd
+
+# Load boundaries
+boundaries = gpd.read_file('https://stilesdata.com/la-geography/la_city_boundary.geojson')
+
+# Load demographics (if available)
+demographics = pd.read_parquet('https://stilesdata.com/la-geography/la_city_boundary_demographics.parquet')
 
 # R with sf
 library(sf)
-la_city <- st_read('https://stilesdata.com/la-geography/la_city_boundary.geojson')
+library(arrow)
+boundaries <- st_read('https://stilesdata.com/la-geography/la_city_boundary.geojson')
+demographics <- read_parquet('https://stilesdata.com/la-geography/la_city_boundary_demographics.parquet')
 ```
 
 ```javascript
@@ -207,10 +253,81 @@ Data sources retain their original licenses (typically public domain or CC0). Se
 - Key dependencies: geopandas, shapely, pyproj, pyarrow, ezesri
 - Managed with `uv` for reproducible environments
 
+## Census Demographics Enrichment
+
+**Enrich any polygon layer with 2020 Census demographics** using reproducible, area-weighted block apportionment.
+
+### What You Get
+
+From the 2020 Decennial Census (hard counts, not estimates):
+- **Population totals** by race and Hispanic/Latino ethnicity
+- **Housing units** (total, occupied, vacant)
+- **Area-weighted apportionment** from Census blocks to your target polygons
+
+**Available for all 13 polygon layers.** See [CENSUS_FIELDS.md](data/docs/CENSUS_FIELDS.md) for complete field documentation.
+
+### Quick Start
+
+```bash
+# 1. Get a free Census API key (one-time, 2 minutes)
+#    Visit: https://api.census.gov/data/key_signup.html
+export CENSUS_API_KEY="your-key-here"
+
+# 2. Fetch LA County Census blocks (~2-3 minutes, ~254K blocks)
+make fetch-census
+
+# 3. Test with LAPD bureaus (fast, 4 features)
+make apportion-census-test
+
+# 4. Apportion to all layers (~5-10 minutes)
+make apportion-census
+
+# 5. Validate results
+make validate-census
+```
+
+### Usage Example
+
+Demographics are saved as companion Parquet files:
+
+```python
+import pandas as pd
+import geopandas as gpd
+
+# Load boundaries and demographics
+boundaries = gpd.read_file('data/standard/lapd_divisions.geojson')
+demographics = pd.read_parquet('data/standard/lapd_divisions_demographics.parquet')
+
+# Join them
+joined = boundaries.merge(demographics, on='prec')
+
+# Map or analyze
+joined.plot(column='pop_total', legend=True, figsize=(12, 10))
+
+# Calculate percentages
+joined['pct_hispanic'] = joined['pop_hispanic'] / joined['pop_total'] * 100
+```
+
+### Demographic Fields
+
+Each `*_demographics.parquet` file includes:
+- `pop_total`, `pop_hispanic`, `pop_white_nh`, `pop_black_nh`, `pop_asian_nh`, `pop_nhpi_nh`, `pop_aian_nh`, `pop_other_nh`, `pop_two_or_more_nh`
+- `housing_total`, `housing_occupied`, `housing_vacant`
+- `source_blocks_count`, `apportioned_at`, `census_vintage`
+
+**Note:** These are 2020 Census hard counts (no margins of error). For income, education, or median age, you'll need American Community Survey (ACS) data.
+
+### Documentation
+
+- **Setup guide:** [CENSUS_SETUP.md](data/docs/CENSUS_SETUP.md)
+- **Field definitions:** [CENSUS_FIELDS.md](data/docs/CENSUS_FIELDS.md)
+- **Testing guide:** [CENSUS_TESTING.md](data/docs/CENSUS_TESTING.md)
+- **Quick start:** [CENSUS_QUICKSTART.md](CENSUS_QUICKSTART.md)
+
 ## Roadmap
 
-- **Phase 1** (Current): Core boundaries with official sources ✅
-- **Phase 2**: Census block apportionment for demographics
+- **Phase 1**: Core boundaries with official sources ✅
+- **Phase 2**: Census block apportionment for demographics ✅
 - **Phase 3**: Documentation site with data dictionary
 - **Phase 4**: Scheduled refreshes with change logs
 

@@ -9,7 +9,7 @@ import geopandas as gpd
 import yaml
 from pathlib import Path
 from datetime import datetime
-from typing import Dict, Optional
+from typing import Dict, Optional, List
 
 
 def load_config(config_path: str = "config/layers.yml") -> Dict:
@@ -202,4 +202,129 @@ def clip_to_boundary(
     print(f"  Clipped from {len(gdf)} to {len(clipped)} features")
     
     return clipped
+
+
+# =============================================================================
+# CENSUS DATA UTILITIES
+# =============================================================================
+
+def load_census_blocks(census_dir: str = "data/census/processed") -> gpd.GeoDataFrame:
+    """
+    Load cached Census blocks with demographics.
+    
+    Args:
+        census_dir: Directory containing processed Census data
+    
+    Returns:
+        GeoDataFrame with Census blocks and demographic fields
+    """
+    census_path = Path(census_dir) / "blocks_2020_enriched.parquet"
+    
+    if not census_path.exists():
+        raise FileNotFoundError(
+            f"Census blocks not found at {census_path}. "
+            "Run 'make fetch-census' first."
+        )
+    
+    print(f"Loading Census blocks from {census_path}")
+    blocks = gpd.read_parquet(census_path)
+    print(f"  ✓ Loaded {len(blocks):,} blocks")
+    
+    return blocks
+
+
+def census_bbox_filter(
+    blocks: gpd.GeoDataFrame,
+    target: gpd.GeoDataFrame,
+    buffer_deg: float = 0.01
+) -> gpd.GeoDataFrame:
+    """
+    Filter Census blocks to target bounding box for performance.
+    
+    Reduces the number of blocks to process by pre-filtering to the
+    target's bounding box with a small buffer.
+    
+    Args:
+        blocks: Census blocks GeoDataFrame
+        target: Target polygon GeoDataFrame
+        buffer_deg: Buffer in degrees to add to bbox (default 0.01 ≈ 0.7 miles)
+    
+    Returns:
+        Filtered blocks GeoDataFrame
+    """
+    # Ensure same CRS
+    if blocks.crs != target.crs:
+        target = target.to_crs(blocks.crs)
+    
+    # Get target bbox with buffer
+    minx, miny, maxx, maxy = target.total_bounds
+    bbox_buffered = (
+        minx - buffer_deg,
+        miny - buffer_deg,
+        maxx + buffer_deg,
+        maxy + buffer_deg
+    )
+    
+    # Filter blocks
+    blocks_filtered = blocks.cx[
+        bbox_buffered[0]:bbox_buffered[2],
+        bbox_buffered[1]:bbox_buffered[3]
+    ]
+    
+    print(f"  Filtered {len(blocks):,} blocks to {len(blocks_filtered):,} "
+          f"within target bbox")
+    
+    return blocks_filtered
+
+
+def validate_apportionment(
+    source_blocks: gpd.GeoDataFrame,
+    apportioned_totals: Dict[str, float],
+    value_cols: list,
+    tolerance_pct: float = 1.0
+) -> bool:
+    """
+    Validate that apportioned totals match source totals.
+    
+    Args:
+        source_blocks: Original Census blocks
+        apportioned_totals: Dictionary of column -> apportioned sum
+        value_cols: List of demographic columns to check
+        tolerance_pct: Acceptable difference percentage (default 1%)
+    
+    Returns:
+        True if validation passes
+    """
+    all_valid = True
+    
+    print("\n  Apportionment validation:")
+    print("  " + "-" * 60)
+    print(f"  {'Variable':<20} {'Source':>15} {'Apportioned':>15} {'Diff %':>10}")
+    print("  " + "-" * 60)
+    
+    for col in value_cols:
+        source_total = source_blocks[col].sum()
+        apportioned_total = apportioned_totals.get(col, 0)
+        
+        if source_total > 0:
+            diff_pct = abs(apportioned_total - source_total) / source_total * 100
+            status = "✓" if diff_pct <= tolerance_pct else "✗"
+            
+            print(f"  {status} {col:<18} {source_total:>15,.0f} {apportioned_total:>15,.0f} "
+                  f"{diff_pct:>9.2f}%")
+            
+            if diff_pct > tolerance_pct:
+                all_valid = False
+        else:
+            print(f"  - {col:<18} {source_total:>15,.0f} {apportioned_total:>15,.0f} "
+                  f"{'N/A':>10}")
+    
+    print("  " + "-" * 60)
+    
+    if all_valid:
+        print("  ✓ All values within tolerance")
+    else:
+        print(f"  ⚠ Some values exceed {tolerance_pct}% tolerance")
+    
+    return all_valid
 

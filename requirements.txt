@@ -13,6 +13,10 @@ pyarrow>=14.0.0  # For Parquet export
 # Data fetching
 requests>=2.31.0
 
+# Census data
+pygris>=0.1.6  # Census TIGER/Line shapefiles
+census>=0.8.22  # Census API wrapper
+
 # Configuration
 pyyaml>=6.0.1
 

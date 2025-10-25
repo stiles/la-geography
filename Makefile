@@ -1,7 +1,7 @@
 # Makefile for la-geo pipeline
 # Usage: make [target]
 
-.PHONY: help fetch standardize validate export quicklook s3-upload s3-download s3-list clean all
+.PHONY: help fetch standardize validate export quicklook s3-upload s3-download s3-list fetch-census apportion-census apportion-census-test validate-census clean all
 
 # Default target
 help:
@@ -16,6 +16,13 @@ help:
 	@echo "  s3-upload    - Upload processed layers to S3"
 	@echo "  s3-download  - Download layers from S3"
 	@echo "  s3-list      - List available layers in S3"
+	@echo ""
+	@echo "Census Demographics (Phase 2):"
+	@echo "  fetch-census        - Fetch 2020 Census blocks and demographics"
+	@echo "  apportion-census    - Apportion demographics to all polygon layers"
+	@echo "  apportion-census-test - Apportion to LAPD bureaus (test)"
+	@echo "  validate-census     - Validate apportionment results"
+	@echo ""
 	@echo "  all          - Run full pipeline (fetch -> export)"
 	@echo "  clean        - Remove generated files"
 	@echo ""
@@ -65,6 +72,27 @@ s3-download:
 s3-list:
 	@echo "Listing S3 layers..."
 	python scripts/s3_sync.py list
+
+# Census demographics targets
+fetch-census:
+	@echo "Fetching 2020 Census blocks and demographics..."
+	python scripts/fetch_census.py
+	@echo "✓ Census fetch complete"
+
+apportion-census:
+	@echo "Apportioning Census data to all polygon layers..."
+	python scripts/apportion_census.py --all
+	@echo "✓ Census apportionment complete"
+
+apportion-census-test:
+	@echo "Apportioning Census data to LAPD bureaus (test)..."
+	python scripts/apportion_census.py --layer lapd_bureaus
+	@echo "✓ Test apportionment complete"
+
+validate-census:
+	@echo "Validating Census apportionment results..."
+	python scripts/validate_apportionment.py --all
+	@echo "✓ Census validation complete"
 
 # Run full pipeline
 all: fetch standardize validate export
