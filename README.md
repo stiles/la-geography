@@ -187,12 +187,20 @@ la-geography/
 ├── data/
 │   ├── raw/               # Immutable source data
 │   ├── standard/          # Cleaned and normalized outputs
-│   └── docs/              # Sample maps and quicklooks
+│   ├── census/            # Census blocks and demographics
+│   └── docs/              # Generated maps and quicklooks
+├── docs/                  # Documentation
+│   ├── CENSUS_FIELDS.md   # Census variable definitions
+│   ├── CENSUS_SETUP.md    # Census API key setup
+│   └── CENSUS_TESTING.md  # Testing guide
 ├── scripts/
-│   ├── fetch_boundaries.py  # Fetch layers from sources
-│   ├── process_raw.py        # Process complex layers
-│   ├── geo_utils.py          # Shared utilities
-│   └── s3_sync.py            # Upload/download from S3
+│   ├── fetch_boundaries.py    # Fetch boundary layers
+│   ├── fetch_census.py        # Fetch Census data
+│   ├── apportion_census.py    # Apportion demographics
+│   ├── validate_apportionment.py  # Validate results
+│   ├── process_raw.py         # Process complex layers
+│   ├── geo_utils.py           # Shared utilities
+│   └── s3_sync.py             # Upload/download from S3
 └── tests/
     └── test_validate.py
 ```
@@ -264,7 +272,7 @@ From the 2020 Decennial Census (hard counts, not estimates):
 - **Housing units** (total, occupied, vacant)
 - **Area-weighted apportionment** from Census blocks to your target polygons
 
-**Available for all 13 polygon layers.** See [CENSUS_FIELDS.md](data/docs/CENSUS_FIELDS.md) for complete field documentation.
+**Available for all 13 polygon layers.** See [CENSUS_FIELDS.md](docs/CENSUS_FIELDS.md) for complete field documentation.
 
 ### Quick Start
 
@@ -319,10 +327,9 @@ Each `*_demographics.parquet` file includes:
 
 ### Documentation
 
-- **Setup guide:** [CENSUS_SETUP.md](data/docs/CENSUS_SETUP.md)
-- **Field definitions:** [CENSUS_FIELDS.md](data/docs/CENSUS_FIELDS.md)
-- **Testing guide:** [CENSUS_TESTING.md](data/docs/CENSUS_TESTING.md)
-- **Quick start:** [CENSUS_QUICKSTART.md](CENSUS_QUICKSTART.md)
+- **Setup guide:** [CENSUS_SETUP.md](docs/CENSUS_SETUP.md)
+- **Field definitions:** [CENSUS_FIELDS.md](docs/CENSUS_FIELDS.md)
+- **Testing guide:** [CENSUS_TESTING.md](docs/CENSUS_TESTING.md)
 
 ## Roadmap
 
