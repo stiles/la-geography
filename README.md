@@ -109,28 +109,28 @@ python scripts/s3_sync.py upload --no-demographics
 
 **Direct Download URLs:**
 
-All layers are publicly accessible via HTTPS. Use these URLs directly in your GIS tools, notebooks, or scripts:
+All layers are publicly accessible via HTTPS. Click layer names to download:
 
-| Layer | URL | Size |
-|-------|-----|------|
-| **LAPD bureaus** | https://stilesdata.com/la-geography/lapd_bureaus.geojson | 0.55 MB |
-| **LAPD divisions** | https://stilesdata.com/la-geography/lapd_divisions.geojson | 0.84 MB |
-| **LAPD reporting districts** | https://stilesdata.com/la-geography/lapd_reporting_districts.geojson | 6.50 MB |
-| **LAPD station locations** | https://stilesdata.com/la-geography/lapd_station_locations.geojson | 0.01 MB |
-| **LA city boundary** | https://stilesdata.com/la-geography/la_city_boundary.geojson | 0.40 MB |
-| **LA city neighborhoods** | https://stilesdata.com/la-geography/la_city_neighborhoods.geojson | 0.95 MB |
-| **LA city neighborhood councils** | https://stilesdata.com/la-geography/la_city_neighborhood_councils.geojson | 2.80 MB |
-| **LA city council districts** | https://stilesdata.com/la-geography/la_city_council_districts.geojson | 1.40 MB |
-| **LA city parks** | https://stilesdata.com/la-geography/la_city_parks.geojson | 5.00 MB |
-| **LA County boundary** | https://stilesdata.com/la-geography/la_county_boundary.geojson | 2.80 MB |
-| **LA County cities** | https://stilesdata.com/la-geography/la_county_cities.geojson | 13.53 MB |
-| **LA County school districts** | https://stilesdata.com/la-geography/la_county_school_districts.geojson | 4.30 MB |
-| **LA freeways (interstates and state highways)** | https://stilesdata.com/la-geography/la_freeways.geojson | 1.62 MB |
-| **LA Metro lines** | https://stilesdata.com/la-geography/la_metro_lines.geojson | 0.44 MB |
-| **LA County Fire Dept station boundaries** | https://stilesdata.com/la-geography/lacofd_station_boundaries.geojson | 5.10 MB |
-| **LA County Fire Dept station locations** | https://stilesdata.com/la-geography/lacofd_station_locations.geojson | 0.10 MB |
-| **LA Fire Dept (city) station boundaries** | https://stilesdata.com/la-geography/lafd_station_boundaries.geojson | 1.70 MB |
-| **Metadata** | https://stilesdata.com/la-geography/metadata.json | JSON |
+| Layer | Size |
+|-------|------|
+| [LAPD bureaus](https://stilesdata.com/la-geography/lapd_bureaus.geojson) | 0.55 MB |
+| [LAPD divisions](https://stilesdata.com/la-geography/lapd_divisions.geojson) | 0.84 MB |
+| [LAPD reporting districts](https://stilesdata.com/la-geography/lapd_reporting_districts.geojson) | 6.50 MB |
+| [LAPD station locations](https://stilesdata.com/la-geography/lapd_station_locations.geojson) | 0.01 MB |
+| [LA city boundary](https://stilesdata.com/la-geography/la_city_boundary.geojson) | 0.40 MB |
+| [LA city neighborhoods](https://stilesdata.com/la-geography/la_city_neighborhoods.geojson) | 0.95 MB |
+| [LA city neighborhood councils](https://stilesdata.com/la-geography/la_city_neighborhood_councils.geojson) | 2.80 MB |
+| [LA city council districts](https://stilesdata.com/la-geography/la_city_council_districts.geojson) | 1.40 MB |
+| [LA city parks](https://stilesdata.com/la-geography/la_city_parks.geojson) | 5.00 MB |
+| [LA County boundary](https://stilesdata.com/la-geography/la_county_boundary.geojson) | 2.80 MB |
+| [LA County cities](https://stilesdata.com/la-geography/la_county_cities.geojson) | 13.53 MB |
+| [LA County school districts](https://stilesdata.com/la-geography/la_county_school_districts.geojson) | 4.30 MB |
+| [LA freeways](https://stilesdata.com/la-geography/la_freeways.geojson) | 1.62 MB |
+| [LA Metro lines](https://stilesdata.com/la-geography/la_metro_lines.geojson) | 0.44 MB |
+| [LA County Fire Dept station boundaries](https://stilesdata.com/la-geography/lacofd_station_boundaries.geojson) | 5.10 MB |
+| [LA County Fire Dept station locations](https://stilesdata.com/la-geography/lacofd_station_locations.geojson) | 0.10 MB |
+| [LA Fire Dept (city) station boundaries](https://stilesdata.com/la-geography/lafd_station_boundaries.geojson) | 1.70 MB |
+| [Metadata](https://stilesdata.com/la-geography/metadata.json) | JSON |
 
 **Demographics files:**  
 Each polygon layer also has a companion demographics file available:
