@@ -70,6 +70,30 @@ la_city_neighborhood_councils:
   name_field: null  # TBD
   source_org: LA City Department of Neighborhood Empowerment
 
+la_city_council_districts:
+  source: arcgis
+  url: https://maps.lacity.org/lahub/rest/services/Boundaries/MapServer/13
+  description: LA City Council Districts (15 districts)
+  expected_count: 15
+  geometry_type: polygon
+  id_field: district
+  name_field: district_name
+  source_org: LA City
+
+la_city_parks:
+  source: arcgis
+  url: https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/LARAP_Parks_040220/FeatureServer/0
+  description: LA City parks and recreation facilities (561 parks)
+  expected_count: 561
+  expected_tolerance: 50
+  geometry_type: polygon
+  id_field: park_id
+  name_field: name
+  source_org: LA City Department of Recreation and Parks
+  notes: |
+    Park classes: N (Neighborhood), C (Community), R (Regional)
+    Includes small pocket parks (<0.01 sq mi) to large regional parks (6+ sq mi)
+
 # =============================================================================
 # LA COUNTY BOUNDARIES
 # =============================================================================
@@ -99,6 +123,23 @@ la_county_cities:
     Processing: Filter feat_type == 'Land', then dissolve by city_name
     Field city_type distinguishes 'City' vs 'Unincorporated'
     Many unincorporated areas dissolve into single "Unincorporated" feature
+
+# =============================================================================
+# SCHOOLS
+# =============================================================================
+la_county_school_districts:
+  source: arcgis
+  url: https://services.arcgis.com/RmCCgQtiZLDCtblq/arcgis/rest/services/School_District/FeatureServer/0
+  description: School district boundaries in LA County (85 districts)
+  expected_count: 85
+  expected_tolerance: 5
+  geometry_type: polygon
+  id_field: abbr
+  name_field: label
+  source_org: LA County Office of Education
+  notes: |
+    Includes Elementary, High School, and Unified school districts
+    Some districts extend beyond LA County borders
 
 # =============================================================================
 # FREEWAYS / HIGHWAYS
