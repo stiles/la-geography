@@ -1,8 +1,8 @@
-# QGIS Review Guide: LA County Cities Layer
+# QGIS review guide: LA County cities layer
 
 _Purpose: Investigate fragmentation and determine best processing approach_
 
-## The Problem
+## The problem
 
 The LA County cities layer has **347 features** but should represent ~88 cities + unincorporated communities.
 
@@ -13,9 +13,9 @@ The LA County cities layer has **347 features** but should represent ~88 cities 
 
 ---
 
-## QGIS Investigation Steps
+## QGIS investigation steps
 
-### 1. Load the Data
+### 1. Load the data
 
 ```
 File → Open → data/standard/la_county_cities.geojson
@@ -23,7 +23,7 @@ File → Open → data/standard/la_county_cities.geojson
 
 Or drag and drop into QGIS.
 
-### 2. Style by City Name
+### 2. Style by city name
 
 **Purpose**: Visualize fragmentation - same city = same color
 
@@ -39,7 +39,7 @@ Or drag and drop into QGIS.
 - Do you see the same color (city) in multiple disconnected areas?
 - How fragmented are major cities like Los Angeles, Long Beach, Pasadena?
 
-### 3. Identify Features
+### 3. Identify features
 
 Click the **"Identify Features"** tool (info icon), then:
 
@@ -59,7 +59,7 @@ Click the **"Identify Features"** tool (info icon), then:
    - Use **Select Features** tool → hold Shift → click multiple parts
    - Check status bar: "X features selected"
 
-### 4. Create a Selection by City
+### 4. Create a selection by city
 
 **Select all "Los Angeles" features:**
 1. Open Attribute Table (Right-click layer → Open Attribute Table)
@@ -72,7 +72,7 @@ Click the **"Identify Features"** tool (info icon), then:
 - Are they all contiguous, or are there islands/exclaves?
 - Do the boundaries look clean or are there obvious data issues?
 
-### 5. Analyze the "Unincorporated" Type
+### 5. Analyze the "unincorporated" type
 
 **Filter to unincorporated areas:**
 1. Right-click layer → Filter...
@@ -90,7 +90,7 @@ Click the **"Identify Features"** tool (info icon), then:
 2. Right-click `city_name` column header → "Show All Values"
 3. How many unique unincorporated community names are there?
 
-### 6. Check for Multipart Polygons
+### 6. Check for multipart polygons
 
 **Add a temporary field to count parts:**
 1. Open Processing Toolbox (Ctrl+Alt+T)
@@ -101,7 +101,7 @@ Click the **"Identify Features"** tool (info icon), then:
    - Output: ??? features
    - If output > input, original has multipart polygons
 
-### 7. Calculate Total Areas by City
+### 7. Calculate total areas by city
 
 **Field Calculator to sum areas by city:**
 1. Attribute Table → Open Field Calculator
@@ -127,7 +127,7 @@ Click the **"Identify Features"** tool (info icon), then:
 
 ---
 
-## Key Questions to Answer
+## Key questions to answer
 
 Based on your QGIS investigation, answer:
 
@@ -144,12 +144,12 @@ Based on your QGIS investigation, answer:
 - [ ] Does it have a specific `city_name` or just "Unincorporated"?
 - [ ] Should it be one polygon or many distinct communities?
 
-### 3. **Data Quality**
+### 3. **Data quality**
 - [ ] How many features are < 0.01 sq mi?
 - [ ] Are tiny slivers legitimate (small parks, right-of-ways) or errors?
 - [ ] Do city boundaries look clean or ragged?
 
-### 4. **Processing Decision**
+### 4. **Processing decision**
 Should we:
 - **Option A**: Dissolve by `city_name` → ~88 features (one per city)
   - ✅ Clean, simple
@@ -172,7 +172,7 @@ Should we:
 
 ---
 
-## Export for Further Analysis
+## Export for further analysis
 
 After your review, export these for discussion:
 
@@ -191,16 +191,3 @@ After your review, export these for discussion:
    - Select Los Angeles features
    - Right-click → Export → Save Selected Features As...
    - Save as: `los_angeles_fragments.geojson`
-
----
-
-## Report Back
-
-Share your findings:
-1. Number of features after "Multipart to singleparts"
-2. Description of giant Unincorporated polygon
-3. Examples of fragmented cities (with fragment counts)
-4. Your recommendation: Option A, B, C, or D?
-
-This will help determine the best processing strategy!
-

@@ -1,4 +1,4 @@
-# Census Demographic Fields
+# Census demographic fields
 
 Documentation for 2020 Decennial Census variables included in this repository's demographic enrichment.
 
@@ -13,7 +13,7 @@ Documentation for 2020 Decennial Census variables included in this repository's 
 
 This repository includes demographic data from the 2020 Decennial Census, apportioned from Census blocks to various administrative and geographic boundaries. The data comes from the **PL 94-171 Redistricting Data Summary File**, which contains hard counts (not estimates) of population and housing.
 
-### Why Decennial Census?
+### Why decennial census?
 
 The Decennial Census provides:
 - **Hard counts** (not sample-based estimates)
@@ -35,7 +35,7 @@ The Decennial Census does **not** include:
 
 ---
 
-## Apportionment Methodology
+## Apportionment methodology
 
 Census demographic values are **area-weighted** from Census blocks to target polygons:
 
@@ -62,7 +62,7 @@ If a Census block with 100 people is split:
 
 ---
 
-## Field Definitions
+## Field definitions
 
 All fields are integer counts (whole numbers).
 
@@ -112,16 +112,16 @@ All fields are integer counts (whole numbers).
 
 ---
 
-## Data Sources
+## Data sources
 
-### Census Block Geometries
+### Census block geometries
 
 - **Source:** U.S. Census Bureau TIGER/Line Shapefiles
 - **Product:** 2020 TIGER/Line Shapefiles - Blocks
 - **Downloaded via:** `pygris` Python library
 - **URL:** https://www.census.gov/geographies/mapping-files/time-series/geo/tiger-line-file.html
 
-### Demographic Data
+### Demographic data
 
 - **Source:** U.S. Census Bureau 2020 Census Redistricting Data (PL 94-171)
 - **Downloaded via:** Census API (https://api.census.gov/data/2020/dec/pl)
@@ -129,7 +129,7 @@ All fields are integer counts (whole numbers).
 
 ---
 
-## Known 2020 Census Benchmarks (LA County)
+## Known 2020 Census benchmarks (LA County)
 
 Use these for validation:
 
@@ -142,7 +142,7 @@ Source: [2020 Census Redistricting Data](https://data.census.gov/)
 
 ---
 
-## Census Block Summary (LA County)
+## Census block summary (LA County)
 
 - **Total blocks:** ~254,000
 - **Population range:** 0 to ~2,000+ per block (most blocks < 200)
@@ -151,7 +151,7 @@ Source: [2020 Census Redistricting Data](https://data.census.gov/)
 
 ---
 
-## Usage Examples
+## Usage examples
 
 ### Load apportioned demographics
 
@@ -198,7 +198,7 @@ by_district = neighborhoods.groupby('council_district')[
 
 ## References
 
-- **Census Bureau PL 94-171 Documentation:** https://www.census.gov/programs-surveys/decennial-census/about/rdo/summary-files.html
+- **Census Bureau PL 94-171 documentation:** https://www.census.gov/programs-surveys/decennial-census/about/rdo/summary-files.html
 - **Technical Documentation:** https://www2.census.gov/programs-surveys/decennial/2020/technical-documentation/
 - **Variable Definitions:** https://api.census.gov/data/2020/dec/pl/variables.html
 
@@ -212,7 +212,7 @@ Census data is public domain (U.S. government work). No restrictions on use or r
 
 ---
 
-## Questions or Issues?
+## Questions or issues?
 
 See the main [README.md](../README.md) for repository information and contact details.
 

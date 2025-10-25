@@ -1,4 +1,4 @@
-# Available Layers from LA City & County Portals
+# Available layers from LA City & County portals
 
 _Last updated: 2025-10-19_
 
@@ -25,7 +25,7 @@ This document catalogs layers available from official LA City and County GIS por
 - Divisions: `https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/LAPD_Division/FeatureServer/0`
 - Reporting Districts: `https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/LAPD_Reporting_District/FeatureServer/0`
 
-### City Boundaries & Administrative
+### City boundaries & administrative
 **Service**: `https://maps.lacity.org/lahub/rest/services/Boundaries/MapServer`
 
 | Layer | ID | Description | Official |
@@ -39,7 +39,7 @@ This document catalogs layers available from official LA City and County GIS por
 
 **Full Boundaries MapServer URL**: `https://maps.lacity.org/lahub/rest/services/Boundaries/MapServer`
 
-### LA City Neighborhoods - LA Times Boundaries ✅
+### LA City neighborhoods - LA Times boundaries ✅
 **Hub Page**: https://geohub.lacity.org/datasets/lahub::la-times-neighborhood-boundaries/about
 
 The City of Los Angeles has officially adopted the LA Times neighborhood boundaries. This is different from "Community Plan Areas" (which are planning zones).
@@ -51,7 +51,7 @@ The City of Los Angeles has officially adopted the LA Times neighborhood boundar
 
 ## LA County GIS Hub (egis-lacounty.hub.arcgis.com)
 
-### County Boundaries & Cities ✅
+### County boundaries & cities ✅
 **Service**: `https://public.gis.lacounty.gov/public/rest/services/LACounty_Dynamic/Political_Boundaries/MapServer`
 
 | Layer | ID | Description | Official | Fields |
@@ -66,7 +66,7 @@ The City of Los Angeles has officially adopted the LA Times neighborhood boundar
 - Hub: https://egis-lacounty.hub.arcgis.com/datasets/city-and-unincorporated-community-boundary-la-county-planning
 - Includes comprehensive update history and field: `CITY_COMM_NAME`
 
-### Public Works Data
+### Public works data
 **Service**: `https://dpw.gis.lacounty.gov/dpw/rest/services/PW_Open_Data/MapServer`
 
 | Layer | ID | Description | Type |
@@ -88,7 +88,7 @@ The City of Los Angeles has officially adopted the LA Times neighborhood boundar
 
 **Note**: Covers entire state. Will need to clip to LA County extent.
 
-### LA County DPW Street Network
+### LA County DPW street network
 **Service**: `https://dpw.gis.lacounty.gov/dpw/rest/services/GMED_LACounty_StreetMap/MapServer`
 
 Includes:
@@ -98,7 +98,7 @@ Includes:
 
 ---
 
-## Comparison with Existing Script URLs
+## Comparison with existing script URLs
 
 Your `fetch_boundaries.py` currently uses these sources:
 
@@ -126,12 +126,12 @@ Your `fetch_boundaries.py` currently uses these sources:
 5. ✅ **Neighborhood Councils**: `https://maps.lacity.org/lahub/rest/services/Boundaries/MapServer/18`
 6. ✅ **Freeways**: Use Caltrans NHS layer, **clip to LA County boundary** - `https://caltrans-gis.dot.ca.gov/arcgis/rest/services/chhighway/national_highway_system/FeatureServer/0`
 
-### Remaining Task
+### Remaining task
 1. Find the exact REST endpoint for LA Times Neighborhood Boundaries (check GeoHub item page for FeatureServer URL)
 
 ---
 
-## Next Steps
+## Next steps
 
 1. Create `config/layers.yml` with these official endpoints
 2. Update fetch scripts to use official sources

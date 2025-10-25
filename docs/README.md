@@ -1,18 +1,18 @@
-# Project Documentation
+# Project documentation
 
 This directory contains working notes, research artifacts, and development documentation for the LA Geography project.
 
 ## Contents
 
-### Development Notes
+### Development notes
 - **`STATUS.md`** - Project status and progress tracking
 - **`FETCH_RESULTS.md`** - Detailed inventory of fetched boundary layers
 
-### Research & Discovery
+### Research & discovery
 - **`AVAILABLE_LAYERS.md`** - Research on available layers from LA City GeoHub and LA County GIS Hub
 - **`QGIS_REVIEW_CITIES.md`** - Guide for manually reviewing the LA County Cities layer in QGIS
 
-## Main Project Documentation
+## Main project documentation
 
 For primary project documentation, see:
 - **`../README.md`** - Main project overview and quick start

@@ -1,10 +1,10 @@
-# Project Status
+# Project status
 
 _Last updated: 2025-10-19_
 
 ## ✅ Completed
 
-### Phase 0: Repository Bootstrap
+### Phase 0: Repository bootstrap
 
 - [x] Project structure created (`data/`, `scripts/`, `config/`, `tests/`)
 - [x] Configuration system (`config/layers.yml`)
@@ -43,7 +43,7 @@ All layers configured in `config/layers.yml` with official REST endpoints:
 ✅ **Transportation**
 - `la_freeways` - National Highway System (will clip to LA County)
 
-### Core Utilities (`scripts/geo_utils.py`)
+### Core utilities (`scripts/geo_utils.py`)
 
 - [x] `area_sqmi()` - Calculate area using EPSG:3310 (California Albers)
 - [x] `ensure_wgs84()` - CRS standardization
@@ -54,9 +54,9 @@ All layers configured in `config/layers.yml` with official REST endpoints:
 - [x] `fix_geometries()` - Auto-fix invalid geometries
 - [x] `clip_to_boundary()` - Spatial clipping (for freeways)
 
-## 🚧 In Progress
+## 🚧 In progress
 
-### Fetch Script Enhancement
+### Fetch script enhancement
 
 Current `scripts/fetch_boundaries.py` features:
 - Configuration-driven from `layers.yml`
@@ -70,7 +70,7 @@ Still needed:
 - [ ] Implement clipping for freeways layer
 - [ ] Create metadata sidecar files (`.meta.json`)
 
-## 📋 Next Steps
+## 📋 Next steps
 
 ### Immediate (Phase 1)
 
@@ -144,7 +144,7 @@ Still needed:
     - Versioned snapshots
     - Public access URLs
 
-## Known Issues
+## Known issues
 
 1. **LA Times Neighborhoods** - REST endpoint not yet identified
    - Hub page: https://geohub.lacity.org/datasets/lahub::la-times-neighborhood-boundaries/about
@@ -154,7 +154,7 @@ Still needed:
    - `fetch_boundaries.py` - Now updated ✅
    - `fetch_lapd_boundaries.py` - Can be deprecated (functionality merged)
 
-## Testing Checklist
+## Testing checklist
 
 Before declaring Phase 1 complete:
 
@@ -186,7 +186,7 @@ python scripts/fetch_boundaries.py --out data/raw/ --layers lapd_bureaus la_city
 make all
 ```
 
-## Project Health
+## Project health
 
 - **Configuration**: ✅ Complete
 - **Utilities**: ✅ Complete
