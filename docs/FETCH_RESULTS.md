@@ -1,4 +1,4 @@
-# Fetch Results & Issues
+# Fetch results & issues
 
 _Created: 2025-10-19_
 
@@ -8,11 +8,11 @@ Fetched **9 layers** from official sources. **6 layers are clean**, **3 layers n
 
 ---
 
-## ✅ Clean Layers (6)
+## ✅ Clean layers (6)
 
 These layers are ready to use with minimal or no processing:
 
-### LAPD Layers
+### LAPD layers
 | Layer | Features | Status | Notes |
 |-------|----------|--------|-------|
 | **lapd_bureaus** | 4 | ✅ Perfect | 4 bureaus, clean schema |
@@ -30,9 +30,9 @@ These layers are ready to use with minimal or no processing:
 
 ---
 
-## ⚠️ Layers Needing Work (3)
+## ⚠️ Layers needing work (3)
 
-### 1. LA County Boundary
+### 1. LA County boundary
 **Issue**: Contains **11 features** (neighboring counties included) instead of 1
 
 **Current state:**
@@ -67,7 +67,7 @@ gdf = gdf.dissolve()
 
 ---
 
-### 2. LA County Cities & Unincorporated Areas
+### 2. LA County cities & unincorporated areas
 **Issue**: Contains **347 fragments** instead of ~88 distinct cities/communities
 
 **Current state:**
@@ -148,9 +148,9 @@ freeways_clipped = gpd.clip(freeways, county)
 
 ---
 
-## Processing Pipeline Recommendations
+## Processing pipeline recommendations
 
-### Phase 1: Filter & Dissolve (High Priority)
+### Phase 1: Filter & dissolve (high priority)
 Create `scripts/process_raw.py` to handle:
 1. **LA County Boundary** - Filter `TYPE == 'LA County'` + dissolve
 2. **LA Freeways** - Clip to LA County boundary
@@ -172,9 +172,9 @@ Create `scripts/standardize.py` to:
 
 ---
 
-## Field Analysis
+## Field analysis
 
-### Fields to Normalize/Keep
+### Fields to normalize/keep
 
 **LAPD Layers:**
 - Key fields: `bureau`, `prec` (division number), `repdist`, `aprec` (division name)
@@ -194,7 +194,7 @@ Create `scripts/standardize.py` to:
 
 ---
 
-## Next Steps
+## Next steps
 
 **Immediate:**
 1. ✅ Create `scripts/process_raw.py` with filtering/dissolving logic

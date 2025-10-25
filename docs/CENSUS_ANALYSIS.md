@@ -1,12 +1,12 @@
-# Census Demographics Analysis Examples
+# Census demographics analysis examples
 
 Quick guide to exploring and analyzing Census demographics data.
 
-## Quick Statistics (`census_stats.py`)
+## Quick statistics (`census_stats.py`)
 
 Fast way to see demographics for any layer.
 
-### Basic Usage
+### Basic usage
 
 ```bash
 # Show summary for a layer
@@ -46,25 +46,25 @@ Most diverse 3:
   Central                          0.721
 ```
 
-### Show More Features
+### Show more features
 
 ```bash
 # Top 10 by population
 python scripts/census_stats.py la_city_neighborhoods --top 10
 ```
 
-### Available Layers
+### Available layers
 
 Run without arguments to see available layers:
 ```bash
 python scripts/census_stats.py
 ```
 
-## Comprehensive Analysis (`analyze_demographics.py`)
+## Comprehensive analysis (`analyze_demographics.py`)
 
 In-depth analysis with superlatives, comparisons, and report generation.
 
-### Analyze Single Layer
+### Analyze single layer
 
 ```bash
 python scripts/analyze_demographics.py --layer lapd_bureaus
@@ -76,7 +76,7 @@ python scripts/analyze_demographics.py --layer lapd_bureaus
 - Superlatives (most populous, most diverse, highest density)
 - Housing occupancy rates
 
-### Analyze All Layers
+### Analyze all layers
 
 ```bash
 python scripts/analyze_demographics.py
@@ -87,7 +87,7 @@ Analyzes all 13 polygon layers with demographics and shows:
 - Cross-layer comparisons
 - Grand totals (with caveat about overlapping layers)
 
-### Compare Layers
+### Compare layers
 
 ```bash
 python scripts/analyze_demographics.py --compare
@@ -98,7 +98,7 @@ Shows side-by-side comparison of:
 - LAPD Bureaus
 - Other major jurisdictions
 
-### Generate Report
+### Generate report
 
 ```bash
 python scripts/analyze_demographics.py --save-report
@@ -118,9 +118,9 @@ Creates `data/docs/DEMOGRAPHICS_REPORT.md` with:
 | la_city_boundary | 1 | 3,983,434 | 46.8% | 1,531,189 |
 ```
 
-## Example Insights
+## Example insights
 
-### Find Most Diverse Neighborhoods
+### Find most diverse neighborhoods
 
 ```bash
 python scripts/census_stats.py la_city_neighborhoods --top 20
@@ -128,7 +128,7 @@ python scripts/census_stats.py la_city_neighborhoods --top 20
 
 Look at the "Most diverse" section to see which neighborhoods have the most racial/ethnic diversity.
 
-### Population Density Hotspots
+### Population density hotspots
 
 ```bash
 python scripts/analyze_demographics.py --layer lapd_divisions
@@ -136,11 +136,11 @@ python scripts/analyze_demographics.py --layer lapd_divisions
 
 Check the "Highest density" superlative to see which division has the most people per square mile.
 
-### Hispanic/Latino Concentration
+### Hispanic/Latino concentration
 
 Both scripts show Hispanic/Latino percentages. Use `census_stats.py` for quick checks or `analyze_demographics.py` for comprehensive view with "Highest % Hispanic" superlative.
 
-### Housing Occupancy Patterns
+### Housing occupancy patterns
 
 ```bash
 python scripts/census_stats.py la_city_parks
@@ -148,7 +148,7 @@ python scripts/census_stats.py la_city_parks
 
 See occupancy rates to understand housing utilization patterns.
 
-## Diversity Index
+## Diversity index
 
 Both scripts calculate a diversity index using:
 
@@ -170,7 +170,7 @@ This simplified index considers the four major race/ethnicity groups.
 3. **Generate reports** for sharing findings with others
 4. **Combine with boundaries** for mapping (see main README)
 
-## Custom Analysis
+## Custom analysis
 
 Both scripts serve as examples. You can:
 - Copy and modify for custom metrics

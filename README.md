@@ -4,7 +4,7 @@ A dependable and clean repository of Los Angeles administrative and physical bou
 
 ## Purpose
 
-Provides clean, versioned, well-documented boundary layers for LA city & County with:
+Provides clean, versioned, well-documented boundary layers for LA city & county with:
 - **Official sources** from open data portals maintained by LA city and LA County
 - **Standardized outputs** in WGS84 (EPSG:4326)
 - **Area calculations** using California Albers (EPSG:3310) for accuracy
@@ -12,7 +12,7 @@ Provides clean, versioned, well-documented boundary layers for LA city & County 
 - **Quality validation** with geometry checks and expected feature counts
 - **Optional demographics** from 2020 Census via block-level apportionment
 
-## Available Layers
+## Available layers
 
 All layers available as clean GeoJSON with standardized fields, area calculations, and validation.
 
@@ -45,7 +45,7 @@ All layers available as clean GeoJSON with standardized fields, area calculation
 
 ---
 
-## **+ Demographics Available**
+## **+ Demographics available**
 
 **All polygon layers can be enriched with 2020 Census demographics** (population, race/ethnicity, housing) through reproducible block-level apportionment.
 
@@ -86,7 +86,7 @@ make standardize validate
 make export
 ```
 
-## S3 Storage
+## S3 storage
 
 Processed layers and demographics are published to S3 for public access:
 
@@ -107,7 +107,7 @@ python scripts/s3_sync.py upload --layer la_city_boundary
 python scripts/s3_sync.py upload --no-demographics
 ```
 
-**Direct Download URLs:**
+**Direct download URLs:**
 
 All layers are publicly accessible via HTTPS. Click layer names to download:
 
@@ -168,7 +168,7 @@ d3.json('https://stilesdata.com/la-geography/la_city_boundary.geojson')
   });
 ```
 
-**Environment Setup:**
+**Environment setup:**
 To upload layers, set these environment variables:
 ```bash
 export MY_AWS_ACCESS_KEY_ID="your-key"
@@ -230,7 +230,7 @@ Layer endpoints are defined in `config/layers.yml` with:
 - Geometry type
 - Source organization
 
-## Data Sources
+## Data sources
 
 - **LA city geo hub**: https://geohub.lacity.org/
 - **LA County GIS hub**: https://egis-lacounty.hub.arcgis.com/
@@ -238,7 +238,7 @@ Layer endpoints are defined in `config/layers.yml` with:
 
 All sources are official government portals with open data licenses.
 
-## Coordinate Reference Systems
+## Coordinate reference systems
 
 - **Storage & sharing**: EPSG:4326 (WGS84 lat/lon)
 - **Area/distance calculations**: EPSG:3310 (California Albers, equal-area)
@@ -264,11 +264,11 @@ Data sources retain their original licenses (typically public domain or CC0). Se
 - Key dependencies: geopandas, shapely, pyproj, pyarrow, ezesri
 - Managed with `uv` for reproducible environments
 
-## Census Demographics Enrichment
+## Census demographics enrichment
 
 **Enrich any polygon layer with 2020 Census demographics** using reproducible, area-weighted block apportionment.
 
-### What You Get
+### What you get
 
 From the 2020 Decennial Census (hard counts, not estimates):
 - **Population totals** by race and Hispanic/Latino ethnicity
@@ -277,7 +277,7 @@ From the 2020 Decennial Census (hard counts, not estimates):
 
 **Available for all 13 polygon layers.** See [CENSUS_FIELDS.md](docs/CENSUS_FIELDS.md) for complete field documentation.
 
-### Quick Start
+### Quick start
 
 ```bash
 # 1. Get a free Census API key (one-time, 2 minutes)
@@ -297,7 +297,7 @@ make apportion-census
 make validate-census
 ```
 
-### Usage Example
+### Usage example
 
 Demographics are saved as companion Parquet files:
 
@@ -319,7 +319,7 @@ joined.plot(column='pop_total', legend=True, figsize=(12, 10))
 joined['pct_hispanic'] = joined['pop_hispanic'] / joined['pop_total'] * 100
 ```
 
-### Demographic Fields
+### Demographic fields
 
 Each `*_demographics.parquet` file includes:
 - `pop_total`, `pop_hispanic`, `pop_white_nh`, `pop_black_nh`, `pop_asian_nh`, `pop_nhpi_nh`, `pop_aian_nh`, `pop_other_nh`, `pop_two_or_more_nh`
@@ -328,7 +328,7 @@ Each `*_demographics.parquet` file includes:
 
 **Note:** These are 2020 Census hard counts (no margins of error). For income, education, or median age, you'll need American Community Survey (ACS) data.
 
-### Analysis & Examples
+### Analysis & examples
 
 Quick statistics for any layer:
 ```bash
@@ -357,14 +357,3 @@ python scripts/analyze_demographics.py --save-report
 - **Field definitions:** [CENSUS_FIELDS.md](docs/CENSUS_FIELDS.md)
 - **Analysis examples:** [CENSUS_ANALYSIS.md](docs/CENSUS_ANALYSIS.md)
 - **Testing guide:** [CENSUS_TESTING.md](docs/CENSUS_TESTING.md)
-
-## Roadmap
-
-- **Phase 1**: Core boundaries with official sources ✅
-- **Phase 2**: Census block apportionment for demographics ✅
-- **Phase 3**: Documentation site with data dictionary
-- **Phase 4**: Scheduled refreshes with change logs
-
-## Contact
-
-See [PLANNING.md](PLANNING.md) for detailed methodology and design decisions.

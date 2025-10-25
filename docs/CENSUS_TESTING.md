@@ -1,4 +1,4 @@
-# Testing Census Demographics Pipeline
+# Testing Census demographics pipeline
 
 Step-by-step guide for testing the Census demographics enrichment pipeline.
 
@@ -25,7 +25,7 @@ Step-by-step guide for testing the Census demographics enrichment pipeline.
    python scripts/process_raw.py
    ```
 
-## Quick Test (Recommended)
+## Quick test (recommended)
 
 Test with LAPD bureaus (only 4 features, runs in ~2-3 minutes):
 
@@ -62,7 +62,7 @@ data/standard/
 
 Note: LAPD service area extends slightly beyond city limits.
 
-## Full Test (All Layers)
+## Full test (all layers)
 
 Run for all 13 polygon layers (~5-10 minutes):
 
@@ -74,7 +74,7 @@ make apportion-census
 make validate-census
 ```
 
-## Individual Layer Test
+## Individual layer test
 
 Test a specific layer:
 
@@ -86,28 +86,28 @@ python scripts/apportion_census.py --layer la_city_neighborhoods
 python scripts/validate_apportionment.py --layer la_city_neighborhoods
 ```
 
-## Validation Checks
+## Validation checks
 
 The validation script checks:
 
-### 1. Conservation of Totals
+### 1. Conservation of totals
 Population should be conserved within 1% (accounting for boundary slivers):
 ```
 Variable              Source      Apportioned    Diff %
 pop_total         10,014,009       10,005,123     0.09%  ✓
 ```
 
-### 2. Benchmark Checks
+### 2. Benchmark checks
 Known 2020 Census totals:
 - LA County: 10,014,009 people
 - LA City: 3,898,747 people
 
-### 3. Data Quality
+### 3. Data quality
 - No negative values
 - No null values
 - All target features have data
 
-## Expected Performance
+## Expected performance
 
 Timing estimates (on typical laptop):
 
@@ -143,7 +143,7 @@ Make sure you've run `python scripts/process_raw.py` to create standardized laye
 - API may have rate limits (500/day without key)
 - Try again later if Census servers are busy
 
-## Sample Output Files
+## Sample output files
 
 ### Demographics Parquet
 ```python
@@ -157,7 +157,7 @@ print(df.columns)
 #  'source_blocks_count', 'apportioned_at', 'census_vintage', 'source_layer']
 ```
 
-### Joined with Boundaries
+### Joined with boundaries
 ```python
 import geopandas as gpd
 boundaries = gpd.read_file('data/standard/lapd_bureaus.geojson')
@@ -168,7 +168,7 @@ joined = boundaries.merge(demographics, on='bureau')
 joined.plot(column='pop_total', legend=True, figsize=(10, 10))
 ```
 
-## Next Steps After Successful Test
+## Next steps after successful test
 
 1. **Upload to S3** (if using cloud storage):
    ```bash
@@ -189,7 +189,7 @@ joined.plot(column='pop_total', legend=True, figsize=(10, 10))
    print(top5)
    ```
 
-## Clean Up (Optional)
+## Clean up (optional)
 
 To remove Census data and free disk space:
 
