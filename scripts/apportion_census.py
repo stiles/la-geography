@@ -160,7 +160,23 @@ def apportion_blocks_to_targets(
     print(f"    Aggregating by target...")
     weighted_cols = [f'{col}_weighted' for col in value_cols]
     
-    result = intersected.groupby(target_id_field)[weighted_cols].sum().reset_index()
+    # Identify descriptive columns from target layer to preserve
+    # These are non-geometric, non-demographic columns
+    preserve_cols = []
+    exclude_cols = {'geometry', 'block_geoid', 'intersection_area_m2', 'weight', 'area_sqmi', 
+                    'source_url', 'fetched_at'} | set(value_cols) | set(weighted_cols)
+    
+    for col in intersected.columns:
+        if col not in exclude_cols and not col.startswith('pop_') and not col.startswith('housing_'):
+            # Check if it's a target-layer column (same value for all rows of same target)
+            if col != target_id_field and col in intersected.columns:
+                preserve_cols.append(col)
+    
+    # Aggregate: sum for weighted demographic cols, first for descriptive cols
+    agg_dict = {col: 'sum' for col in weighted_cols}
+    agg_dict.update({col: 'first' for col in preserve_cols if col in intersected.columns})
+    
+    result = intersected.groupby(target_id_field).agg(agg_dict).reset_index()
     
     # Rename columns (remove _weighted suffix)
     rename_map = {f'{col}_weighted': col for col in value_cols}

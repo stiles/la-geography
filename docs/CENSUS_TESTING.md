@@ -205,8 +205,8 @@ rm -rf data/census/
 ## Support
 
 For issues specific to Census data collection:
-- See [CENSUS_SETUP.md](docs/CENSUS_SETUP.md)
-- See [CENSUS_FIELDS.md](docs/CENSUS_FIELDS.md)
+- See [CENSUS_SETUP.md](CENSUS_SETUP.md)
+- See [CENSUS_FIELDS.md](CENSUS_FIELDS.md)
 
 For issues with the pipeline scripts:
 - Check script output for error messages
