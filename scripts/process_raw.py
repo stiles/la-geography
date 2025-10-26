@@ -30,9 +30,9 @@ from geo_utils import (
 
 def process_la_county_boundary(input_path: Path, output_path: Path) -> None:
     """
-    Process LA County boundary: Filter to LA County only and dissolve.
+    Process LA County boundary: Dissolve fragments into single county boundary.
     
-    Input: 11 features (LA County + 8 neighboring counties)
+    Input: 7 fragments (unincorporated areas that form LA County boundary)
     Output: 1 feature (LA County mainland + islands dissolved)
     """
     print(f"\n{'='*60}")
@@ -44,32 +44,22 @@ def process_la_county_boundary(input_path: Path, output_path: Path) -> None:
     print(f"  Input: {len(gdf)} features")
     
     # Show what we have
-    print("\n  Before filtering:")
-    for _, row in gdf.iterrows():
-        print(f"    - {row['name']}: {row['area_sqmi']:.2f} sq mi (TYPE: {row['type']})")
+    print("\n  LA County fragments:")
+    if 'area_sqmi' in gdf.columns:
+        for idx, row in gdf.iterrows():
+            name_field = row.get('city_name', row.get('name', 'Unknown'))
+            print(f"    - Fragment {idx+1}: {row['area_sqmi']:.2f} sq mi ({name_field})")
+        print(f"  Total area before dissolve: {gdf['area_sqmi'].sum():.2f} sq mi")
     
-    # Filter to LA County only (name == "LOS ANGELES COUNTY")
-    print(f"\n  Filtering to name == 'LOS ANGELES COUNTY'...")
-    gdf_filtered = gdf[gdf['name'] == 'LOS ANGELES COUNTY'].copy()
-    print(f"  After filter: {len(gdf_filtered)} features")
-    
-    if len(gdf_filtered) == 0:
-        print("  ✗ No features match 'LOS ANGELES COUNTY'")
-        print(f"  Available names: {gdf['name'].unique().tolist()}")
-        return
-    
-    # Show the pieces
-    print("\n  LA County pieces:")
-    for idx, row in gdf_filtered.iterrows():
-        print(f"    - {row['area_sqmi']:.2f} sq mi")
-    print(f"  Total area: {gdf_filtered['area_sqmi'].sum():.2f} sq mi")
-    
-    # Dissolve into single feature
-    print("\n  Dissolving into single feature...")
-    gdf_dissolved = gdf_filtered.dissolve()
+    # Dissolve all fragments into single feature
+    print(f"\n  Dissolving {len(gdf)} fragments into single feature...")
+    gdf_dissolved = gdf.dissolve()
     
     # Reset index and clean up
     gdf_dissolved = gdf_dissolved.reset_index(drop=True)
+    
+    # Add a clean name
+    gdf_dissolved['name'] = 'Los Angeles County'
     
     # Keep only essential fields
     gdf_dissolved = gdf_dissolved[['name', 'geometry']]

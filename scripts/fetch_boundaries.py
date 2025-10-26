@@ -3,15 +3,21 @@
 Fetch geographic boundaries for LA area from official sources.
 
 Uses config/layers.yml for endpoint configuration.
-Downloads from LA City GeoHub, LA County GIS Hub, and Caltrans.
+Downloads from LA City GeoHub, LA County GIS Hub, Caltrans, and other sources.
+
+Supports:
+- ArcGIS REST FeatureServer/MapServer endpoints (via ezesri)
+- Shapefile downloads from URLs (e.g., GitHub raw)
 
 Usage:
     python scripts/fetch_boundaries.py --out data/raw/
     python scripts/fetch_boundaries.py --out data/raw/ --layers lapd_bureaus la_city_boundary
+    python scripts/fetch_boundaries.py --out data/raw/ --layers la_neighborhoods_comprehensive
 """
 
 import argparse
 import sys
+import tempfile
 from pathlib import Path
 
 import geopandas as gpd
@@ -29,6 +35,8 @@ from geo_utils import (
     validate_bbox,
     fix_geometries,
     get_bbox_string,
+    apply_filter,
+    download_shapefile,
 )
 
 
@@ -54,6 +62,40 @@ def fetch_arcgis_layer(url: str, name: str) -> gpd.GeoDataFrame:
         return None
 
 
+def fetch_shapefile_layer(url: str, name: str) -> gpd.GeoDataFrame:
+    """
+    Fetch a shapefile from a URL (e.g., GitHub raw).
+    
+    Downloads all shapefile components (.shp, .shx, .dbf, .prj) to a
+    temporary directory and loads with GeoPandas.
+    
+    Args:
+        url: URL to .shp file
+        name: Layer name for logging
+    
+    Returns:
+        GeoDataFrame with features
+    """
+    print(f"  Fetching shapefile from URL...")
+    
+    try:
+        # Create temporary directory
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp_path = Path(temp_dir)
+            
+            # Download shapefile components
+            shp_path = download_shapefile(url, temp_path)
+            
+            # Load with GeoPandas
+            gdf = gpd.read_file(shp_path)
+            print(f"  ✓ Retrieved {len(gdf)} features")
+            
+            return gdf
+    except Exception as e:
+        print(f"  ✗ Error fetching {name}: {e}")
+        return None
+
+
 def process_layer(layer_key: str, layer_config: dict) -> gpd.GeoDataFrame:
     """
     Fetch and process a single layer according to configuration.
@@ -72,6 +114,8 @@ def process_layer(layer_key: str, layer_config: dict) -> gpd.GeoDataFrame:
     # Fetch based on source type
     if layer_config['source'] == 'arcgis':
         gdf = fetch_arcgis_layer(layer_config['url'], layer_key)
+    elif layer_config['source'] == 'shapefile':
+        gdf = fetch_shapefile_layer(layer_config['url'], layer_key)
     else:
         print(f"  ✗ Unknown source type: {layer_config['source']}")
         return None
@@ -82,6 +126,14 @@ def process_layer(layer_key: str, layer_config: dict) -> gpd.GeoDataFrame:
     
     # Normalize column names
     gdf = normalize_columns(gdf)
+    
+    # Apply filter if specified (before other processing)
+    if 'filter' in layer_config and layer_config['filter']:
+        gdf = apply_filter(gdf, layer_config['filter'])
+        
+        if len(gdf) == 0:
+            print(f"  ✗ No features remain after filtering")
+            return None
     
     # Ensure WGS84
     gdf = ensure_wgs84(gdf)

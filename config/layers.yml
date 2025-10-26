@@ -49,15 +49,50 @@ la_city_boundary:
   name_field: null
   source_org: LA City Bureau of Engineering
 
+la_neighborhoods_comprehensive:
+  source: shapefile
+  url: https://github.com/datadesk/boundaries.latimes.com/raw/master/shapefiles/neighborhoods/v6/neighborhoods.shp
+  description: >
+    Comprehensive LA neighborhoods: all cities, unincorporated areas, and LA City neighborhoods.
+    The canonical "Where do you live?" map for LA County. Combines incorporated cities 
+    (Inglewood, Pasadena, Malibu), unincorporated areas (Marina del Rey, East LA, Hacienda Heights), 
+    and LA City neighborhoods (North Hollywood, Venice, Silver Lake).
+  expected_count: 269
+  expected_tolerance: 5
+  geometry_type: polygon
+  id_field: slug
+  name_field: name
+  source_org: LA Times Data Desk
+  filter: county == 'los-angeles'
+  notes: |
+    Source: LA Times Mapping LA project (boundaries.latimes.com)
+    GitHub: https://github.com/datadesk/boundaries.latimes.com (archived)
+    269 features covering LA County (after filtering out Orange County features)
+    
+    Fields:
+      - slug: URL-safe identifier (e.g., 'marina-del-rey')
+      - name: Display name (e.g., 'Marina del Rey')
+      - type: 'city', 'unincorporated-area', or neighborhood designation
+      - city: 'Los Angeles' for LA City neighborhoods, empty for others
+      - region: Geographic grouping (e.g., 'westside', 'south-la', 'san-fernando-valley')
+      - county: 'los-angeles' or 'orange'
+    
+    Recommended starting point for most use cases.
+
 la_city_neighborhoods:
   source: arcgis
   url: https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/LA_Times_Neighborhoods/FeatureServer/0
-  description: LA Times Neighborhood Boundaries (officially adopted by LA City)
+  description: LA Times Neighborhood Boundaries (officially adopted by LA City) - LA City only
   expected_count: 114
   geometry_type: polygon
   id_field: objectid
   name_field: name
   source_org: LA City / LA Times
+  notes: |
+    This is a subset of the comprehensive LA Times neighborhoods layer,
+    containing only the LA City neighborhoods portion (114 features).
+    For the complete county-wide layer including all cities and unincorporated
+    areas, see la_neighborhoods_comprehensive.
 
 la_city_neighborhood_councils:
   source: arcgis
@@ -99,14 +134,19 @@ la_city_parks:
 # =============================================================================
 la_county_boundary:
   source: arcgis
-  url: https://public.gis.lacounty.gov/public/rest/services/LACounty_Dynamic/Political_Boundaries/MapServer/18
-  description: LA County boundary (includes neighboring counties, filter by TYPE='LA County')
-  expected_count: 1
+  url: https://maps.lacity.org/lahub/rest/services/Boundaries/MapServer/15
+  description: LA County boundary (mainland + Catalina + San Clemente Island)
+  expected_count: 7  # 7 fragments that dissolve into 1 county boundary
+  expected_tolerance: 2
   geometry_type: polygon
   id_field: null
-  name_field: name
-  source_org: LA County
-  filter: TYPE = 'LA County'  # Use this to get only LA County polygon
+  name_field: city_name
+  source_org: LA City GeoHub
+  notes: |
+    Raw layer contains 7 unincorporated area fragments that together form the complete
+    LA County boundary (mainland plus Catalina and San Clemente Islands).
+    Processing: Dissolve all fragments into single county boundary feature.
+    Much cleaner than the previous 11-county source that required filtering.
 
 la_county_cities:
   source: arcgis
