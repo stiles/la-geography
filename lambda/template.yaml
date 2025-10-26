@@ -1,0 +1,68 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: LA Geography Point-Lookup API
+
+Globals:
+  Function:
+    Timeout: 30
+    MemorySize: 512
+    Runtime: python3.11
+    Environment:
+      Variables:
+        LOG_LEVEL: INFO
+
+Resources:
+  LookupFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lookup/
+      Handler: handler.lambda_handler
+      Description: Point-in-polygon lookup for LA geography layers     
+      # Use a public community layer (recommended - check if available in your region)
+      # Layers:
+      #   - arn:aws:lambda:us-west-2:524387336408:layer:gdal38-py311:1
+      
+      # My own ARN
+      Layers:
+        - arn:aws:lambda:us-west-2:399949164916:layer:shapely-python311:1
+      
+      Events:
+        LookupApi:
+          Type: Api
+          Properties:
+            Path: /lookup
+            Method: get
+            RestApiId: !Ref LookupApi
+      Tags:
+        Project: la-geography
+        Component: point-lookup-api
+
+  LookupApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: prod
+      Cors:
+        AllowMethods: "'GET, OPTIONS'"
+        AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+        AllowOrigin: "'*'"
+      Description: LA Geography Point-Lookup API
+
+Outputs:
+  ApiEndpoint:
+    Description: "API Gateway endpoint URL for point-lookup"
+    Value: !Sub "https://${LookupApi}.execute-api.${AWS::Region}.amazonaws.com/prod/lookup"
+    Export:
+      Name: LAGeographyLookupApiEndpoint
+  
+  FunctionArn:
+    Description: "Lambda Function ARN"
+    Value: !GetAtt LookupFunction.Arn
+    Export:
+      Name: LAGeographyLookupFunctionArn
+  
+  FunctionName:
+    Description: "Lambda Function Name"
+    Value: !Ref LookupFunction
+    Export:
+      Name: LAGeographyLookupFunctionName
+

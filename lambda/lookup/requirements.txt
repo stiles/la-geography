@@ -1,0 +1,5 @@
+# Lambda function dependencies for point-lookup API (Simplified version)
+# Shapely is provided via Lambda Layer
+
+# No additional dependencies needed - shapely comes from layer
+# Python standard library provides: json, logging, urllib
