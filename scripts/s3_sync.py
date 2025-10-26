@@ -22,7 +22,7 @@ import argparse
 import os
 import sys
 from pathlib import Path
-from datetime import datetime
+from datetime import datetime, timezone
 import json
 
 import boto3
@@ -257,7 +257,7 @@ def upload_metadata(s3_client, include_demographics: bool = True):
     metadata = {
         "name": "LA Geography Boundaries",
         "description": "Clean, standardized boundary layers for Los Angeles",
-        "updated_at": datetime.utcnow().isoformat() + "Z",
+        "updated_at": datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z'),
         "crs": "EPSG:4326",
         "base_url": f"https://{S3_BUCKET}/{S3_PREFIX}",
         "layers": {},

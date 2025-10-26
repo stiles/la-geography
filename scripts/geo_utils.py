@@ -7,9 +7,12 @@ field normalization, and data validation.
 
 import geopandas as gpd
 import yaml
+import requests
+import tempfile
 from pathlib import Path
 from datetime import datetime
 from typing import Dict, Optional, List
+import shutil
 
 
 def load_config(config_path: str = "config/layers.yml") -> Dict:
@@ -202,6 +205,109 @@ def clip_to_boundary(
     print(f"  Clipped from {len(gdf)} to {len(clipped)} features")
     
     return clipped
+
+
+def apply_filter(gdf: gpd.GeoDataFrame, filter_expr: str) -> gpd.GeoDataFrame:
+    """
+    Apply a filter expression to a GeoDataFrame.
+    
+    Supports simple equality filters like:
+    - "county == 'los-angeles'"
+    - "TYPE = 'LA County'"
+    
+    Args:
+        gdf: GeoDataFrame to filter
+        filter_expr: Filter expression string
+    
+    Returns:
+        Filtered GeoDataFrame
+    """
+    print(f"  Applying filter: {filter_expr}")
+    
+    # Parse simple equality filters
+    # Support both == and = for convenience
+    if '==' in filter_expr:
+        field, value = filter_expr.split('==')
+    elif '=' in filter_expr:
+        field, value = filter_expr.split('=')
+    else:
+        print(f"  ⚠ Unsupported filter format: {filter_expr}")
+        return gdf
+    
+    field = field.strip()
+    value = value.strip().strip("'\"")
+    
+    if field not in gdf.columns:
+        print(f"  ⚠ Filter field '{field}' not found in data")
+        return gdf
+    
+    before_count = len(gdf)
+    gdf_filtered = gdf[gdf[field] == value].copy()
+    after_count = len(gdf_filtered)
+    
+    print(f"  ✓ Filtered from {before_count} to {after_count} features")
+    
+    return gdf_filtered
+
+
+def download_shapefile(url: str, temp_dir: Path) -> Path:
+    """
+    Download a shapefile and all its components from a URL.
+    
+    Handles GitHub raw URLs by downloading .shp, .shx, .dbf, and .prj files.
+    
+    Args:
+        url: URL to .shp file (e.g., from GitHub raw)
+        temp_dir: Temporary directory to save files
+    
+    Returns:
+        Path to downloaded .shp file
+    """
+    # Shapefile components
+    extensions = ['.shp', '.shx', '.dbf', '.prj', '.cpg', '.qpj']
+    
+    # Get base URL (remove .shp extension)
+    if url.endswith('.shp'):
+        base_url = url[:-4]
+    else:
+        base_url = url
+    
+    # Get filename for local storage
+    filename_base = Path(base_url).name
+    
+    print(f"  Downloading shapefile components...")
+    
+    downloaded_files = []
+    for ext in extensions:
+        component_url = base_url + ext
+        local_path = temp_dir / (filename_base + ext)
+        
+        try:
+            response = requests.get(component_url, timeout=30)
+            if response.status_code == 200:
+                with open(local_path, 'wb') as f:
+                    f.write(response.content)
+                downloaded_files.append(ext)
+                print(f"    ✓ Downloaded {ext}")
+            elif response.status_code == 404 and ext in ['.cpg', '.qpj']:
+                # Optional files, skip silently
+                pass
+            else:
+                print(f"    ⚠ Could not download {ext} (HTTP {response.status_code})")
+        except Exception as e:
+            if ext in ['.cpg', '.qpj']:
+                # Optional files
+                pass
+            else:
+                print(f"    ⚠ Error downloading {ext}: {e}")
+    
+    # Verify we have the essential files
+    essential = ['.shp', '.shx', '.dbf']
+    if not all(ext in downloaded_files for ext in essential):
+        missing = [ext for ext in essential if ext not in downloaded_files]
+        raise ValueError(f"Missing essential shapefile components: {missing}")
+    
+    return temp_dir / (filename_base + '.shp')
 
 
 # =============================================================================

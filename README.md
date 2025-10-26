@@ -16,6 +16,19 @@ Provides clean, versioned, well-documented boundary layers for LA city & county 
 
 All layers available as clean GeoJSON with standardized fields, area calculations, and validation.
 
+### LA neighborhoods (comprehensive) ⭐
+
+**The canonical "Where do you live?" map for Los Angeles County**
+
+- **LA Neighborhoods (Comprehensive)** (270): Every city, unincorporated area, and LA City neighborhood in one layer
+  - Includes incorporated cities (Inglewood, Pasadena, Culver City)
+  - Unincorporated areas (Marina del Rey, East LA, Hacienda Heights)  
+  - LA City neighborhoods (Venice, Silver Lake, North Hollywood)
+  - This is what people mean when they say "I live in Hollywood" or "I'm in Culver City"
+
+**Source:** [LA Times Mapping LA project](https://github.com/datadesk/boundaries.latimes.com) (archived)  
+**Credit:** Created by [Ben Welsh](https://github.com/palewire) and the [LA Times Data Desk](https://github.com/datadesk). Though the original project was deprecated in 2021, I'm excited to keep these essential boundaries alive and available.
+
 ### LAPD (police)
 - **Bureaus** (4): Central, South, Valley, West
 - **Divisions** (21): Pacific, Rampart, Central, etc.
@@ -24,10 +37,12 @@ All layers available as clean GeoJSON with standardized fields, area calculation
 
 ### LA city
 - **City Boundary**: Official city limits
-- **Neighborhoods**: LA Times boundaries (officially adopted)
+- **Neighborhoods** (114): LA Times boundaries within LA City only (officially adopted)
 - **Neighborhood Councils**: ~99 certified councils
 - **Council Districts**: 15 city council districts
 - **Parks**: 561 parks and recreation facilities
+
+*For the complete county-wide map including all cities and unincorporated areas, see "LA Neighborhoods (Comprehensive)" above.*
 
 ### LA County
 - **County boundary**: LA County limits
@@ -113,6 +128,7 @@ All layers are publicly accessible via HTTPS. Click layer names to download:
 
 | Layer | Size |
 |-------|------|
+| [**LA neighborhoods (comprehensive)**](https://stilesdata.com/la-geography/la_neighborhoods_comprehensive.geojson) | **5.80 MB** |
 | [LAPD bureaus](https://stilesdata.com/la-geography/lapd_bureaus.geojson) | 0.55 MB |
 | [LAPD divisions](https://stilesdata.com/la-geography/lapd_divisions.geojson) | 0.84 MB |
 | [LAPD reporting districts](https://stilesdata.com/la-geography/lapd_reporting_districts.geojson) | 6.50 MB |
@@ -144,27 +160,32 @@ Each polygon layer also has a companion demographics file available:
 import geopandas as gpd
 import pandas as pd
 
-# Load boundaries
-boundaries = gpd.read_file('https://stilesdata.com/la-geography/la_city_boundary.geojson')
+# Load the comprehensive LA neighborhoods layer
+neighborhoods = gpd.read_file('https://stilesdata.com/la-geography/la_neighborhoods_comprehensive.geojson')
 
 # Load demographics (if available)
-demographics = pd.read_parquet('https://stilesdata.com/la-geography/la_city_boundary_demographics.parquet')
+demographics = pd.read_parquet('https://stilesdata.com/la-geography/la_neighborhoods_comprehensive_demographics.parquet')
+
+# Or load a simpler layer like city boundary
+boundaries = gpd.read_file('https://stilesdata.com/la-geography/la_city_boundary.geojson')
 
 # R with sf
 library(sf)
 library(arrow)
-boundaries <- st_read('https://stilesdata.com/la-geography/la_city_boundary.geojson')
-demographics <- read_parquet('https://stilesdata.com/la-geography/la_city_boundary_demographics.parquet')
+neighborhoods <- st_read('https://stilesdata.com/la-geography/la_neighborhoods_comprehensive.geojson')
+demographics <- read_parquet('https://stilesdata.com/la-geography/la_neighborhoods_comprehensive_demographics.parquet')
 ```
 
 ```javascript
 // JavaScript with D3
-d3.json('https://stilesdata.com/la-geography/la_city_boundary.geojson')
+d3.json('https://stilesdata.com/la-geography/la_neighborhoods_comprehensive.geojson')
   .then(data => {
     const projection = d3.geoMercator().fitSize([width, height], data);
     const path = d3.geoPath().projection(projection);
     svg.selectAll('path').data(data.features)
-       .enter().append('path').attr('d', path);
+       .enter().append('path')
+         .attr('d', path)
+         .attr('class', d => d.properties.type); // Style by city/neighborhood type
   });
 ```
 
@@ -232,11 +253,16 @@ Layer endpoints are defined in `config/layers.yml` with:
 
 ## Data sources
 
-- **LA city geo hub**: https://geohub.lacity.org/
-- **LA County GIS hub**: https://egis-lacounty.hub.arcgis.com/
+- **LA City GeoHub**: https://geohub.lacity.org/
+- **LA County GIS Hub**: https://egis-lacounty.hub.arcgis.com/
 - **Caltrans**: https://caltrans-gis.dot.ca.gov/
+- **LA Times Data Desk**: https://github.com/datadesk/boundaries.latimes.com (archived)
 
-All sources are official government portals with open data licenses.
+All sources are official government portals or trusted journalism organizations with open data licenses.
+
+### Special thanks
+
+The comprehensive LA neighborhoods layer comes from the groundbreaking [Mapping LA](https://github.com/datadesk/boundaries.latimes.com) project created by [Ben Welsh](https://github.com/palewire) and the [LA Times Data Desk](https://github.com/datadesk). This project, active from 2009-2021, became the definitive geographic reference for how Angelenos describe where they live. Though archived, its boundaries remain the gold standard for LA geography. We're honored to preserve and distribute this work.
 
 ## Coordinate reference systems
 
