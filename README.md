@@ -84,6 +84,43 @@ make apportion-census
 
 ---
 
+## **+ Point-lookup API available**
+
+**Query any coordinate to get all geographic information in one request** - Find neighborhood, city, police division, fire station, council district, and more for any lat/lon point.
+
+**Live API endpoint:** `https://v7cwkba61i.execute-api.us-west-2.amazonaws.com/prod/lookup`
+
+```bash
+# Example: What's at this location?
+curl "https://v7cwkba61i.execute-api.us-west-2.amazonaws.com/prod/lookup?lat=34.0522&lon=-118.2437"
+
+# Response includes all layers
+{
+  "status": "success",
+  "query": {"lat": 34.0522, "lon": -118.2437},
+  "results": {
+    "neighborhood": "Downtown",
+    "city": "Los Angeles",
+    "lapd_division": "Central",
+    "lapd_bureau": "Central Bureau",
+    "lafd_station": "Station 3",
+    "council_district": "District 14",
+    ...
+  }
+}
+```
+
+**Deploy your own API** (AWS Lambda + API Gateway, ~$0.30/month for low traffic):
+```bash
+cd lambda/
+sam build
+sam deploy --guided
+```
+
+**→** See [API Documentation](docs/API.md) and [Deployment Guide](lambda/DEPLOYMENT.md) for details.
+
+---
+
 ## Quick Start
 
 ```bash
