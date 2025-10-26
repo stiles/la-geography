@@ -88,24 +88,29 @@ make apportion-census
 
 **Query any coordinate to get all geographic information in one request** - Find neighborhood, city, police division, fire station, council district, and more for any lat/lon point.
 
-**Live API endpoint:** `https://v7cwkba61i.execute-api.us-west-2.amazonaws.com/prod/lookup`
+**Live API endpoint:** `https://api.stilesdata.com/la-geography/lookup`
 
 ```bash
 # Example: What's at this location?
-curl "https://v7cwkba61i.execute-api.us-west-2.amazonaws.com/prod/lookup?lat=34.0522&lon=-118.2437"
+curl "https://api.stilesdata.com/la-geography/lookup?lat=34.0665304&lon=-118.3718048"
 
 # Response includes all layers
 {
   "status": "success",
-  "query": {"lat": 34.0522, "lon": -118.2437},
+  "query": {
+    "lat": 34.0665304,
+    "lon": -118.3718048
+  },
   "results": {
-    "neighborhood": "Downtown",
+    "neighborhood": "Beverly Grove",
     "city": "Los Angeles",
-    "lapd_division": "Central",
-    "lapd_bureau": "Central Bureau",
-    "lafd_station": "Station 3",
-    "council_district": "District 14",
-    ...
+    "lapd_division": "Wilshire",
+    "lapd_bureau": "West Bureau",
+    "lafd_station": "Fire Station 61",
+    "lacofd_station": "N/A (LAFD jurisdiction)",
+    "council_district": "5 - Katy Yaroslavsky",
+    "neighborhood_council": "Mid City West CC",
+    "school_district": "Los Angeles USD"
   }
 }
 ```

@@ -28,6 +28,7 @@ help:
 	@echo "  lambda-test         - Run Lambda function unit tests"
 	@echo "  lambda-build        - Build Lambda deployment package with SAM"
 	@echo "  lambda-deploy       - Deploy Lambda function to AWS"
+	@echo "  lambda-domain       - Setup custom domain (api.stilesdata.com)"
 	@echo "  lambda-local        - Run Lambda API locally (requires Docker)"
 	@echo "  lambda-invoke       - Test deployed Lambda with sample request"
 	@echo ""
@@ -137,6 +138,11 @@ lambda-deploy:
 	@echo "Deploying Lambda function to AWS..."
 	cd lambda && sam deploy
 	@echo "✓ Deploy complete"
+
+lambda-domain:
+	@echo "Setting up custom domain for API..."
+	cd lambda && ./setup_custom_domain.sh
+	@echo "✓ Custom domain setup complete"
 
 lambda-local:
 	@echo "Starting Lambda API locally (requires Docker)..."

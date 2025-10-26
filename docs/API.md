@@ -4,11 +4,11 @@
 
 ## Quick start
 
-**Endpoint**: `https://v7cwkba61i.execute-api.us-west-2.amazonaws.com/prod/lookup`
+**Endpoint**: `https://api.stilesdata.com/la-geography/lookup`
 
 **Example request**:
 ```bash
-curl "https://v7cwkba61i.execute-api.us-west-2.amazonaws.com/prod/lookup?lat=34.0522&lon=-118.2437"
+curl "https://api.stilesdata.com/la-geography/lookup?lat=34.0522&lon=-118.2437"
 ```
 
 **Example response**:

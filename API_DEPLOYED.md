@@ -2,19 +2,20 @@
 
 **Status**: Live and working  
 **Deployed**: October 26, 2025  
-**Endpoint**: `https://v7cwkba61i.execute-api.us-west-2.amazonaws.com/prod/lookup`
+**Endpoint**: `https://api.stilesdata.com/la-geography/lookup`  
+**Custom Domain**: ✅ Configured with EDGE endpoint (CloudFront)
 
 ## Quick test
 
 ```bash
 # Downtown LA
-curl "https://v7cwkba61i.execute-api.us-west-2.amazonaws.com/prod/lookup?lat=34.0522&lon=-118.2437"
+curl "https://api.stilesdata.com/la-geography/lookup?lat=34.0522&lon=-118.2437"
 
 # Venice Beach
-curl "https://v7cwkba61i.execute-api.us-west-2.amazonaws.com/prod/lookup?lat=33.9850&lon=-118.4695"
+curl "https://api.stilesdata.com/la-geography/lookup?lat=33.9850&lon=-118.4695"
 
 # Pasadena
-curl "https://v7cwkba61i.execute-api.us-west-2.amazonaws.com/prod/lookup?lat=34.1478&lon=-118.1445"
+curl "https://api.stilesdata.com/la-geography/lookup?lat=34.1478&lon=-118.1445"
 ```
 
 ## What it returns
