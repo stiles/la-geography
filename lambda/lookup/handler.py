@@ -21,6 +21,39 @@ logger.setLevel(logging.INFO)
 # Global cache for loaded GeoJSON features
 _layer_cache = {}
 
+# LAPD Division to Bureau mapping (fallback when spatial query fails)
+LAPD_DIVISION_TO_BUREAU = {
+    # Central Bureau
+    "Central": "Central Bureau",
+    "Rampart": "Central Bureau",
+    "Newton": "Central Bureau",
+    "Northeast": "Central Bureau",
+    "Hollenbeck": "Central Bureau",
+    
+    # West Bureau
+    "Pacific": "West Bureau",
+    "West LA": "West Bureau",
+    "West Los Angeles": "West Bureau",
+    "West Traffic": "West Bureau",
+    "Hollywood": "West Bureau",
+    "Wilshire": "West Bureau",
+    "Olympic": "West Bureau",
+    
+    # Valley Bureau
+    "Foothill": "Valley Bureau",
+    "Devonshire": "Valley Bureau",
+    "North Hollywood": "Valley Bureau",
+    "Van Nuys": "Valley Bureau",
+    "West Valley": "Valley Bureau",
+    "Topanga": "Valley Bureau",
+    
+    # South Bureau
+    "77th Street": "South Bureau",
+    "Southwest": "South Bureau",
+    "Harbor": "South Bureau",
+    "Southeast": "South Bureau",
+}
+
 
 def load_geojson_from_url(url: str) -> Dict:
     """Load GeoJSON from HTTPS URL."""
@@ -96,6 +129,38 @@ def validate_coordinates(lat: float, lon: float) -> Optional[str]:
     return None
 
 
+def normalize_text(text: str) -> str:
+    """
+    Normalize text formatting for consistent output.
+    
+    Converts ALL CAPS to Title Case, preserves existing title case.
+    """
+    if not text:
+        return text
+    
+    # Check if text is all caps (more than half uppercase)
+    if sum(1 for c in text if c.isupper()) > len(text) * 0.5:
+        # Convert to title case, but preserve common abbreviations
+        words = text.split()
+        normalized_words = []
+        
+        # Common acronyms to keep uppercase
+        ACRONYMS = {'NC', 'USD', 'LAPD', 'LAFD', 'CC'}
+        
+        for word in words:
+            # Keep specific acronyms uppercase
+            if word in ACRONYMS:
+                normalized_words.append(word)
+            # Otherwise convert to title case
+            else:
+                normalized_words.append(word.title())
+        
+        return ' '.join(normalized_words)
+    
+    # Already has mixed case, return as-is
+    return text
+
+
 def query_point(lat: float, lon: float) -> Dict[str, Any]:
     """
     Query all layers for features containing the given point.
@@ -127,9 +192,9 @@ def query_point(lat: float, lon: float) -> Dict[str, Any]:
                 # Get the name value from properties
                 name_value = feature['properties'].get(name_field)
                 
-                # Convert to string
+                # Convert to string and normalize
                 if name_value is not None:
-                    results[response_key] = str(name_value)
+                    results[response_key] = normalize_text(str(name_value))
                 else:
                     results[response_key] = None
                     
@@ -144,6 +209,49 @@ def query_point(lat: float, lon: float) -> Dict[str, Any]:
         except Exception as e:
             logger.error(f"Error querying {layer_name}: {str(e)}")
             results[response_key] = None
+    
+    # Post-process results for better null handling
+    results = improve_null_values(results)
+    
+    return results
+
+
+def improve_null_values(results: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Replace null values with contextual messages where appropriate.
+    """
+    # If in LAFD jurisdiction, LACOFD should indicate it's not applicable
+    if results.get('lafd_station') and not results.get('lacofd_station'):
+        results['lacofd_station'] = "N/A (LAFD jurisdiction)"
+    
+    # If in LACOFD jurisdiction, LAFD should indicate it's not applicable
+    if results.get('lacofd_station') and not results.get('lafd_station'):
+        results['lafd_station'] = "N/A (LACOFD jurisdiction)"
+    
+    # If outside LA City, LAPD fields should indicate it
+    if not results.get('lapd_division'):
+        results['lapd_division'] = "N/A (outside LAPD jurisdiction)"
+        results['lapd_bureau'] = "N/A (outside LAPD jurisdiction)"
+    
+    # If have LAPD division but no bureau, use mapping as fallback
+    if results.get('lapd_division') and results['lapd_division'] != "N/A (outside LAPD jurisdiction)":
+        if not results.get('lapd_bureau'):
+            # Try to map division to bureau
+            division_name = results['lapd_division']
+            bureau = LAPD_DIVISION_TO_BUREAU.get(division_name)
+            if bureau:
+                results['lapd_bureau'] = bureau
+                logger.info(f"Mapped division '{division_name}' to bureau '{bureau}' using fallback")
+            else:
+                logger.warning(f"No bureau mapping found for division: {division_name}")
+                results['lapd_bureau'] = None
+    
+    # If outside LA City, city-specific fields should indicate it
+    if results.get('city') and results['city'] != 'Los Angeles':
+        if not results.get('council_district'):
+            results['council_district'] = "N/A (outside LA City)"
+        if not results.get('neighborhood_council'):
+            results['neighborhood_council'] = "N/A (outside LA City)"
     
     return results
 
