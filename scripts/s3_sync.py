@@ -173,7 +173,7 @@ def upload_layers(layer_name: str = None, include_demographics: bool = True):
                 demo_s3_key = f"{S3_PREFIX}/{layer}_demographics.parquet"
                 if upload_file(s3_client, demo_path, demo_s3_key):
                     success_count += 1
-                    print(f"  ✓ Also uploaded demographics")
+                    print(f"  ✓ Also uploaded companion demographics file")
                 else:
                     fail_count += 1
                 print()
@@ -232,7 +232,7 @@ def download_layers(layer_name: str = None, include_demographics: bool = True):
                 # File exists, download it
                 if download_file(s3_client, demo_s3_key, demo_path):
                     success_count += 1
-                    print(f"  ✓ Also downloaded demographics")
+                    print(f"  ✓ Also downloaded companion demographics file")
                 else:
                     fail_count += 1
                 print()

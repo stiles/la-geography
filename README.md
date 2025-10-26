@@ -323,26 +323,83 @@ make apportion-census
 make validate-census
 ```
 
-### Usage example
+### Why separate files?
 
-Demographics are saved as companion Parquet files:
+Demographics are stored as **companion Parquet files** (separate from GeoJSON boundaries) for several good reasons:
+
+- **Size efficiency**: Demographics are ~50 KB vs 1-15 MB for geometries. Parquet is extremely compact for tabular data.
+- **Optional enrichment**: Users who only need boundaries (for basemaps, spatial joins, etc.) don't download or process demographics.
+- **Update independence**: Re-run census apportionment without re-fetching boundaries.
+- **Data type optimization**: GeoJSON for geometry (human-readable, universal), Parquet for demographics (binary, columnar, fast).
+- **Clear provenance**: Separation makes it explicit that demographics are derived, not intrinsic properties.
+
+### Usage patterns
+
+**Option 1: Helper function (recommended)**
+
+The easiest way to load layers with demographics:
+
+```python
+from scripts.data_loader import load_layer_with_demographics
+
+# Load boundaries + demographics in one line
+enriched = load_layer_with_demographics('lapd_divisions')
+
+# Works with local files or S3 URLs
+enriched = load_layer_with_demographics(
+    'lapd_divisions',
+    base_url='https://stilesdata.com/la-geography'
+)
+
+# Map or analyze
+enriched.plot(column='pop_total', legend=True, figsize=(12, 10))
+```
+
+**Option 2: Manual join (full control)**
+
+For transparency or custom joins:
 
 ```python
 import pandas as pd
 import geopandas as gpd
 
-# Load boundaries and demographics
+# Load files separately
 boundaries = gpd.read_file('data/standard/lapd_divisions.geojson')
 demographics = pd.read_parquet('data/standard/lapd_divisions_demographics.parquet')
 
-# Join them
+# Join on ID field (varies by layer - see config/layers.yml)
 joined = boundaries.merge(demographics, on='prec')
-
-# Map or analyze
-joined.plot(column='pop_total', legend=True, figsize=(12, 10))
 
 # Calculate percentages
 joined['pct_hispanic'] = joined['pop_hispanic'] / joined['pop_total'] * 100
+```
+
+**Option 3: Boundaries only**
+
+Many use cases don't need demographics:
+
+```python
+import geopandas as gpd
+from scripts.data_loader import load_layer
+
+# Just the boundaries
+boundaries = load_layer('lapd_divisions')
+
+# Or from S3
+boundaries = gpd.read_file('https://stilesdata.com/la-geography/lapd_divisions.geojson')
+```
+
+**R users:**
+
+```r
+library(sf)
+library(arrow)
+library(dplyr)
+
+# Load and join
+boundaries <- st_read('https://stilesdata.com/la-geography/lapd_divisions.geojson')
+demographics <- read_parquet('https://stilesdata.com/la-geography/lapd_divisions_demographics.parquet')
+enriched <- boundaries %>% left_join(demographics, by = 'prec')
 ```
 
 ### Demographic fields
