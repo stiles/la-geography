@@ -155,6 +155,23 @@ Source: [2020 Census Redistricting Data](https://data.census.gov/)
 
 ### Load apportioned demographics
 
+**Recommended: Use the helper function**
+
+```python
+from scripts.data_loader import load_layer_with_demographics
+
+# Load boundaries + demographics in one line (auto-detects ID field)
+enriched = load_layer_with_demographics('lapd_divisions')
+
+# Works with local files or directly from S3
+enriched = load_layer_with_demographics(
+    'lapd_divisions',
+    base_url='https://stilesdata.com/la-geography'
+)
+```
+
+**Alternative: Manual join (for full control)**
+
 ```python
 import pandas as pd
 import geopandas as gpd
@@ -162,11 +179,13 @@ import geopandas as gpd
 # Option 1: Demographics only (no geometry)
 demo = pd.read_parquet('data/standard/lapd_divisions_demographics.parquet')
 
-# Option 2: Join with boundaries
+# Option 2: Join with boundaries manually
 boundaries = gpd.read_file('data/standard/lapd_divisions.geojson')
 demo = pd.read_parquet('data/standard/lapd_divisions_demographics.parquet')
-joined = boundaries.merge(demo, on='prec')
+joined = boundaries.merge(demo, on='prec')  # ID field varies by layer
 ```
+
+**Why separate files?** Demographics are stored as companion Parquet files for size efficiency (~50 KB vs 1-15 MB geometries), optional enrichment (users who only need boundaries don't download demographics), and update independence. See the [main README](../README.md#why-separate-files) for details.
 
 ### Calculate derived statistics
 
