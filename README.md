@@ -20,7 +20,7 @@ All layers available as clean GeoJSON with standardized fields, area calculation
 
 **The "Where do you live?" map for Los Angeles County**
 
-- **LA Neighborhoods** (270): Every city, unincorporated area, and LA City neighborhood in one layer
+- **LA neighborhoods** (270): Every city, unincorporated area, and LA City neighborhood in one layer
   - Includes incorporated cities (Inglewood, Pasadena, Culver City)
   - Unincorporated areas (Marina del Rey, East LA, Hacienda Heights)  
   - LA City neighborhoods (Venice, Silver Lake, North Hollywood)
@@ -28,7 +28,7 @@ All layers available as clean GeoJSON with standardized fields, area calculation
   - No, you don't live in the "City of North Hollywood"! 
 
 **Source:** [LA Times Mapping LA project](https://github.com/datadesk/boundaries.latimes.com) (archived)  
-**Credit:** Created by [Ben Welsh](https://github.com/palewire) and the [LA Times Data Desk](https://github.com/datadesk). Though the original project was deprecated a few years ago, I'm excited to keep these essential boundaries active in my own way. 
+**Credit:** Created by [Ben Welsh](https://github.com/palewire) and the [LA Times Data Desk](https://github.com/datadesk). Though the original project was deprecated a few years ago, I'm excited to keep these essential boundaries active — and easily enriched with demographic data — in my own way. 
 
 ### LAPD (police)
 - **Bureaus** (4): Central, South, Valley, West
