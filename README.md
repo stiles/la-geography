@@ -1,6 +1,6 @@
 # LA geography
 
-A dependable and clean repository of Los Angeles administrative and physical boundary layers for reproducible analysis and easy mapping. Optionally enrich any layer with 2020 Census demographics.
+A dependable and clean repository of Los Angeles administrative and physical boundary layers for reproducible analysis and easy mapping. Optionally enrich any layer with 2020 Census demographics. Pinpoint "your LA" with an API.
 
 ## Purpose
 
@@ -16,18 +16,19 @@ Provides clean, versioned, well-documented boundary layers for LA city & county 
 
 All layers available as clean GeoJSON with standardized fields, area calculations, and validation.
 
-### LA neighborhoods (comprehensive) ⭐
+### Canonical LA neighborhoods
 
-**The canonical "Where do you live?" map for Los Angeles County**
+**The "Where do you live?" map for Los Angeles County**
 
-- **LA Neighborhoods (Comprehensive)** (270): Every city, unincorporated area, and LA City neighborhood in one layer
+- **LA Neighborhoods** (270): Every city, unincorporated area, and LA City neighborhood in one layer
   - Includes incorporated cities (Inglewood, Pasadena, Culver City)
   - Unincorporated areas (Marina del Rey, East LA, Hacienda Heights)  
   - LA City neighborhoods (Venice, Silver Lake, North Hollywood)
   - This is what people mean when they say "I live in Hollywood" or "I'm in Culver City"
+  - No, you don't live in the "City of North Hollywood"! 
 
 **Source:** [LA Times Mapping LA project](https://github.com/datadesk/boundaries.latimes.com) (archived)  
-**Credit:** Created by [Ben Welsh](https://github.com/palewire) and the [LA Times Data Desk](https://github.com/datadesk). Though the original project was deprecated in 2021, I'm excited to keep these essential boundaries alive and available.
+**Credit:** Created by [Ben Welsh](https://github.com/palewire) and the [LA Times Data Desk](https://github.com/datadesk). Though the original project was deprecated a few years ago, I'm excited to keep these essential boundaries active in my own way. 
 
 ### LAPD (police)
 - **Bureaus** (4): Central, South, Valley, West
@@ -301,10 +302,6 @@ Layer endpoints are defined in `config/layers.yml` with:
 - **LA Times Data Desk**: https://github.com/datadesk/boundaries.latimes.com (archived)
 
 All sources are official government portals or trusted journalism organizations with open data licenses.
-
-### Special thanks
-
-The comprehensive LA neighborhoods layer comes from the groundbreaking [Mapping LA](https://github.com/datadesk/boundaries.latimes.com) project created by [Ben Welsh](https://github.com/palewire) and the [LA Times Data Desk](https://github.com/datadesk). This project, active from 2009-2021, became the definitive geographic reference for how Angelenos describe where they live. Though archived, its boundaries remain the gold standard for LA geography. We're honored to preserve and distribute this work.
 
 ## Coordinate reference systems
 
