@@ -86,6 +86,23 @@ LAYERS = [
         "id_field": "abbr",
         "description": "School district",
     },
+    {
+        "name": "la_county_election_precincts",
+        "geojson_file": "la_county_election_precincts.geojson",
+        "response_key": "election_precinct",
+        "name_field": "precinct",
+        "id_field": "precinct",
+        "description": "Election precinct",
+    },
+    {
+        "name": "la_county_airport_noise_contours",
+        "geojson_file": "la_county_airport_noise_contours.geojson",
+        "response_key": "airport_noise",
+        "name_field": "airport_name",
+        "id_field": "objectid",
+        "description": "Airport noise contour",
+        "extra_fields": ["class"],
+    },
 ]
 
 # LA County bounding box for validation (rough bounds)

@@ -338,6 +338,69 @@ lapd_station_locations:
     Includes division name, location address, and precinct number
     Complements the existing LAPD division boundaries layer
 
+# =============================================================================
+# AIRPORTS
+# =============================================================================
+la_county_airports:
+  source: arcgis
+  url: https://arcgis.gis.lacounty.gov/arcgis/rest/services/DRP/A_NET/MapServer/0
+  description: LA County airports (commercial and general aviation)
+  expected_count: 16
+  expected_tolerance: 3
+  geometry_type: point
+  id_field: objectid
+  name_field: name
+  source_org: LA County Department of Regional Planning
+  notes: |
+    Airport locations in LA County (16 total)
+    - 4 commercial airports (LAX, Bob Hope/Burbank, Long Beach, Ontario)
+    - 11 general aviation airports
+    - 1 other (Catalina Airport-In-The-Sky)
+    Type field distinguishes 'Commercial Airport' vs 'General Aviation Airport'
+    Includes facility names, alternative names, and location data
+
+la_county_airport_noise_contours:
+  source: arcgis
+  url: https://arcgis.gis.lacounty.gov/arcgis/rest/services/DRP/A_NET/MapServer/6
+  description: Airport noise contours (55-85 dB CNEL)
+  expected_count: 35
+  expected_tolerance: 10
+  geometry_type: polygon
+  id_field: objectid
+  name_field: airport_name
+  source_org: LA County Department of Regional Planning
+  notes: |
+    Community Noise Equivalent Level (CNEL) contours around major airports (35 contours)
+    CLASS field indicates noise level: 55, 60, 65, 70, 75, 80, 85 dB
+    Used for land use planning and development review near airports
+    Includes AIRPORT_NAME (LAX, Burbank, Palmdale, etc.), DATE_RECEIVED, and SOURCE
+    Higher dB levels indicate greater noise impact
+    Range: 0.00 - 30.70 sq mi per contour
+
+# =============================================================================
+# ELECTIONS
+# =============================================================================
+la_county_election_precincts:
+  source: arcgis
+  url: https://services.arcgis.com/RmCCgQtiZLDCtblq/arcgis/rest/services/Registrar_Recorder_Precincts_Election/FeatureServer/0
+  description: LA County Registrar-Recorder election precincts (current as of Sept 2025)
+  expected_count: 1502
+  expected_tolerance: 50
+  geometry_type: polygon
+  id_field: precinct
+  name_field: precinct
+  source_org: LA County Registrar-Recorder/County Clerk
+  notes: |
+    Consolidated election precincts established by LA County RR/CC (1502 precincts)
+    Updated for current election - last updated September 23, 2025
+    Includes voter statistics:
+      - VBMVoters: Vote By Mail registered voters
+      - PollVoters: Poll voter count
+      - BallotGroup: Ballot group identifier
+      - SerialNumber: Precinct serial number
+    Precincts are consolidated for election administration purposes
+    Range: 0.00 - 220.73 sq mi per precinct
+
 # NOTE: Commented out - LA County dynamic MapServer service returning HTML instead of JSON
 # Requires authentication - not publicly accessible
 # la_county_public_safety_jurisdictions:

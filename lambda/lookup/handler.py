@@ -192,11 +192,32 @@ def query_point(lat: float, lon: float) -> Dict[str, Any]:
                 # Get the name value from properties
                 name_value = feature['properties'].get(name_field)
                 
-                # Convert to string and normalize
-                if name_value is not None:
-                    results[response_key] = normalize_text(str(name_value))
+                # Check if layer config specifies extra fields to include
+                extra_fields = config.get("extra_fields", [])
+                
+                if extra_fields:
+                    # Build a dict with name and extra fields
+                    result_dict = {}
+                    if name_value is not None:
+                        result_dict["name"] = normalize_text(str(name_value))
+                    else:
+                        result_dict["name"] = None
+                    
+                    # Add extra fields
+                    for field in extra_fields:
+                        field_value = feature['properties'].get(field)
+                        if field_value is not None:
+                            result_dict[field] = str(field_value)
+                        else:
+                            result_dict[field] = None
+                    
+                    results[response_key] = result_dict
                 else:
-                    results[response_key] = None
+                    # Convert to string and normalize (simple string response)
+                    if name_value is not None:
+                        results[response_key] = normalize_text(str(name_value))
+                    else:
+                        results[response_key] = None
                     
                 if len(matches) > 1:
                     logger.warning(

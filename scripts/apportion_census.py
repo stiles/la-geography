@@ -182,6 +182,11 @@ def apportion_blocks_to_targets(
     rename_map = {f'{col}_weighted': col for col in value_cols}
     result = result.rename(columns=rename_map)
     
+    # Round all demographic values to 0 decimal places (whole numbers)
+    for col in value_cols:
+        if col in result.columns:
+            result[col] = result[col].round(0)
+    
     # Add count of source blocks
     block_counts = intersected.groupby(target_id_field)['block_geoid'].nunique().reset_index()
     block_counts.columns = [target_id_field, 'source_blocks_count']
