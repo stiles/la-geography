@@ -246,6 +246,10 @@ def main():
     
     fetched = {}
     for layer_key, layer_config in layers_to_fetch.items():
+        # Skip non-layer config sections (e.g., census)
+        if not isinstance(layer_config, dict) or 'url' not in layer_config:
+            continue
+        
         # Skip layers with missing URLs
         if layer_config['url'] == 'TO_BE_CONFIRMED':
             print(f"\n⚠ Skipping {layer_key}: URL not yet configured")

@@ -59,6 +59,13 @@ All layers available as clean GeoJSON with standardized fields, area calculation
 - **Freeways**: Interstates and state highways clipped to LA County
 - **Metro Lines**: LA Metro rail lines and bus rapid transit (17 lines)
 
+### Airports
+- **Airport Locations** (16): All LA County airports (4 commercial + 12 general aviation)
+- **Airport Noise Contours** (35): CNEL noise zones (55-85 dB) around major airports
+
+### Elections
+- **Election Precincts** (1,502): Current LA County election precincts (Sept 2025)
+
 ---
 
 ## **+ Demographics available**
@@ -111,7 +118,25 @@ curl "https://api.stilesdata.com/la-geography/lookup?lat=34.0665304&lon=-118.371
     "lacofd_station": "N/A (LAFD jurisdiction)",
     "council_district": "5 - Katy Yaroslavsky",
     "neighborhood_council": "Mid City West CC",
-    "school_district": "Los Angeles USD"
+    "school_district": "Los Angeles USD",
+    "election_precinct": "9002547A",
+    "airport_noise": null
+  }
+}
+
+# Example near LAX (in airport noise zone)
+curl "https://api.stilesdata.com/la-geography/lookup?lat=33.9416&lon=-118.4085"
+
+{
+  "results": {
+    "neighborhood": "Westchester",
+    "city": "Los Angeles",
+    "election_precinct": "9001390A",
+    "airport_noise": {
+      "name": "Los Angeles International",
+      "class": "70"
+    }
+    // ... other fields
   }
 }
 ```
