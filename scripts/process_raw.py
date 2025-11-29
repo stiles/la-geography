@@ -242,6 +242,68 @@ def process_la_county_cities(input_path: Path, output_path: Path) -> None:
     print(f"  ✓ Saved to {output_path}")
 
 
+def process_la_regions(input_path: Path, output_path: Path) -> None:
+    """
+    Process LA Regions: Dissolve comprehensive neighborhoods by region field.
+    
+    Creates broader geographic regions (Westside, South LA, San Gabriel Valley, etc.)
+    by dissolving the comprehensive neighborhoods layer on the region field.
+    
+    Input: 270 features (neighborhoods, cities, unincorporated areas)
+    Output: 16 features (one per region)
+    """
+    print(f"\n{'='*60}")
+    print("Processing: LA Regions")
+    print(f"{'='*60}")
+    
+    gdf = gpd.read_file(input_path)
+    
+    print(f"  Input: {len(gdf)} features")
+    
+    # Show breakdown by region before dissolving
+    print(f"\n  Regions breakdown:")
+    region_counts = gdf['region'].value_counts().sort_values(ascending=False)
+    for region, count in region_counts.items():
+        area = gdf[gdf['region'] == region]['area_sqmi'].sum()
+        print(f"    - {region}: {count} neighborhoods ({area:.2f} sq mi)")
+    
+    print(f"  Total area before dissolve: {gdf['area_sqmi'].sum():.2f} sq mi")
+    
+    # Dissolve by region
+    print(f"\n  Dissolving by region...")
+    gdf_dissolved = gdf.dissolve(by='region', aggfunc='first')
+    gdf_dissolved = gdf_dissolved.reset_index()
+    
+    # Clean up columns - keep only essential fields
+    # Create a clean name from the slug
+    gdf_dissolved['name'] = gdf_dissolved['region'].str.replace('-', ' ').str.title()
+    gdf_dissolved['slug'] = gdf_dissolved['region']
+    
+    # Keep only essential columns
+    keep_cols = ['slug', 'name', 'geometry']
+    gdf_dissolved = gdf_dissolved[keep_cols].copy()
+    
+    print(f"  Output: {len(gdf_dissolved)} features")
+    
+    # Recalculate area after dissolve
+    gdf_dissolved = add_area_if_polygon(gdf_dissolved)
+    
+    print(f"  Total area after dissolve: {gdf_dissolved['area_sqmi'].sum():.2f} sq mi")
+    
+    # Show results sorted by area
+    print(f"\n  Regions by area:")
+    for _, row in gdf_dissolved.sort_values('area_sqmi', ascending=False).iterrows():
+        print(f"    - {row['name']}: {row['area_sqmi']:.2f} sq mi")
+    
+    # Ensure WGS84
+    gdf_dissolved = ensure_wgs84(gdf_dissolved)
+    
+    # Save
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    gdf_dissolved.to_file(output_path, driver="GeoJSON")
+    print(f"  ✓ Saved to {output_path}")
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Process raw boundary data to fix known issues"
@@ -258,7 +320,7 @@ def main():
     )
     parser.add_argument(
         "--layer",
-        choices=["la_county_boundary", "la_freeways", "la_county_cities", "all"],
+        choices=["la_county_boundary", "la_freeways", "la_county_cities", "la_regions", "all"],
         default="all",
         help="Specific layer to process (default: all)"
     )
@@ -309,6 +371,15 @@ def main():
             process_la_freeways(input_path, output_path, county_path)
         else:
             print(f"\n⚠️  Skipping la_freeways: {input_path} not found")
+    
+    if args.layer in ["la_regions", "all"]:
+        input_path = input_dir / "la_neighborhoods_comprehensive.geojson"
+        output_path = output_dir / "la_regions.geojson"
+        
+        if input_path.exists():
+            process_la_regions(input_path, output_path)
+        else:
+            print(f"\n⚠️  Skipping la_regions: {input_path} not found")
     
     print(f"\n{'='*60}")
     print("✓ PROCESSING COMPLETE")

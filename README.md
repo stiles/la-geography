@@ -27,8 +27,13 @@ All layers available as clean GeoJSON with standardized fields, area calculation
   - This is what people mean when they say "I live in Hollywood" or "I'm in Culver City"
   - No, you don't live in the "City of North Hollywood"! 
 
+- **LA regions** (16): Broad geographic regions of LA County
+  - Dissolves neighborhoods into larger areas: Westside, South LA, San Gabriel Valley, etc.
+  - Useful for high-level analysis and settling debates about which neighborhoods belong where
+  - See `docs/LA_REGIONS.md` for complete region list and demographics
+
 **Source:** [LA Times Mapping LA project](https://github.com/datadesk/boundaries.latimes.com) (archived)  
-**Credit:** Created by [Ben Welsh](https://github.com/palewire) and the [LA Times Data Desk](https://github.com/datadesk). Though the original project was deprecated a few years ago, I'm excited to keep these essential boundaries active — and easily enriched with demographic data — in my own way. 
+**Credit:** Created by [Ben Welsh](https://github.com/palewire) and the [LA Times Data Desk](https://github.com/datadesk). Though the original project was deprecated a few years ago, I'm excited to keep these essential boundaries active — and easily enriched with demographic data — in my own way. 
 
 ### LAPD (police)
 - **Bureaus** (4): Central, South, Valley, West
@@ -197,6 +202,7 @@ All layers are publicly accessible via HTTPS. Click layer names to download:
 | Layer | Size |
 |-------|------|
 | [**LA neighborhoods (comprehensive)**](https://stilesdata.com/la-geography/la_neighborhoods_comprehensive.geojson) | **5.80 MB** |
+| [**LA County regions (Westside, San Fernando Valley, South Bay, etc.)**](https://stilesdata.com/la-geography/la_regions.geojson) | **1.47 MB** |
 | [LAPD bureaus](https://stilesdata.com/la-geography/lapd_bureaus.geojson) | 0.55 MB |
 | [LAPD divisions](https://stilesdata.com/la-geography/lapd_divisions.geojson) | 0.84 MB |
 | [LAPD reporting districts](https://stilesdata.com/la-geography/lapd_reporting_districts.geojson) | 6.50 MB |
