@@ -79,6 +79,29 @@ la_neighborhoods_comprehensive:
     
     Recommended starting point for most use cases.
 
+la_regions:
+  source: derived
+  derived_from: la_neighborhoods_comprehensive
+  description: >
+    Broad geographic regions of LA County. Dissolves the comprehensive neighborhoods
+    by region to create 16 larger geographic areas like Westside, South LA, San Gabriel Valley.
+    Useful for high-level geographic analysis and for people who think the Westside
+    is only west of the 405.
+  expected_count: 16
+  geometry_type: polygon
+  id_field: slug
+  name_field: name
+  source_org: LA Times Data Desk (derived)
+  notes: |
+    Derived from la_neighborhoods_comprehensive by dissolving on the region field.
+    Creates 16 broad regions covering LA County:
+    - San Gabriel Valley, San Fernando Valley, South LA, Central LA
+    - Southeast, Westside, South Bay, Harbor
+    - Antelope Valley, Northwest County, Verdugos, Santa Monica Mountains
+    - Northeast LA, Eastside, Angeles Forest, Pomona Valley
+    
+    Processing: Dissolve la_neighborhoods_comprehensive by region field
+
 la_city_neighborhoods:
   source: arcgis
   url: https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/LA_Times_Neighborhoods/FeatureServer/0

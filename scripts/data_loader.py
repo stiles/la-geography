@@ -249,7 +249,9 @@ def load_layer_with_demographics(
                     f"Boundaries columns: {list(boundaries.columns)}, "
                     f"Demographics columns: {list(demographics.columns)}"
                 )
-    else:
+    
+    # Get ID field from config if we have it
+    if config is not None:
         id_field = get_layer_id_field(layer_name, config)
     
     # Verify ID field exists in both dataframes
@@ -265,8 +267,17 @@ def load_layer_with_demographics(
             f"Available columns: {list(demographics.columns)}"
         )
     
+    # Drop columns from demographics that would conflict with boundaries
+    # Keep demographic columns (pop_*, housing_*) and metadata, drop census block attributes
+    demo_cols_to_keep = [id_field]  # Always keep the join key
+    for col in demographics.columns:
+        if col.startswith('pop_') or col.startswith('housing_') or col in ['source_blocks_count', 'apportioned_at', 'source_layer', 'census_vintage']:
+            demo_cols_to_keep.append(col)
+    
+    demographics_clean = demographics[demo_cols_to_keep].copy()
+    
     # Join demographics to boundaries
-    enriched = boundaries.merge(demographics, on=id_field, how='left')
+    enriched = boundaries.merge(demographics_clean, on=id_field, how='left')
     
     # Check for unmatched features
     unmatched = enriched[enriched['pop_total'].isna()]
