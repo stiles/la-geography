@@ -1,6 +1,6 @@
 # LA geography
 
-A dependable and clean repository of Los Angeles administrative and physical boundary layers for reproducible analysis and easy mapping. Optionally enrich any layer with 2020 Census demographics. Pinpoint "your LA" with an API.
+A dependable and clean repository of Los Angeles administrative and physical boundary layers for reproducible analysis and easy mapping. Optionally enrich any layer with 2020 Census demographics. Pinpoint "your LA" with an API. The data feeds [https://www.whatsmyla.com](https://www.whatsmyla.com). 
 
 ## Purpose
 
