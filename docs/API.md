@@ -11,7 +11,7 @@
 curl "https://api.stilesdata.com/la-geography/lookup?lat=34.0522&lon=-118.2437"
 ```
 
-**Example response**:
+**Example response** (LA City location):
 ```json
 {
   "status": "success",
@@ -22,12 +22,69 @@ curl "https://api.stilesdata.com/la-geography/lookup?lat=34.0522&lon=-118.2437"
   "results": {
     "neighborhood": "Downtown",
     "city": "Los Angeles",
-    "lapd_division": "Central",
-    "lapd_bureau": "Central Bureau",
-    "lafd_station": "Station 3",
-    "lacofd_station": null,
-    "council_district": "District 14",
-    "neighborhood_council": "Downtown Los Angeles Neighborhood Council",
+    "region": "Central LA",
+    "law_enforcement": {
+      "agency": "LAPD",
+      "division": "Central",
+      "bureau": "Central Bureau"
+    },
+    "fire": {
+      "agency": "LAFD",
+      "station": "Station 3"
+    },
+    "representation": {
+      "type": "city_council",
+      "district": "14",
+      "representative": null
+    },
+    "zip_code": "90012",
+    "school_district": "Los Angeles Unified",
+    "neighborhood_demographics": {
+      "population": 54239,
+      "pop_hispanic": 10234,
+      "pop_white_nh": 15678,
+      "pop_black_nh": 3456,
+      "pop_asian_nh": 22145,
+      "pop_other_nh": 2726
+    },
+    "city_demographics": {
+      "population": 3898747,
+      "pop_hispanic": 1844857,
+      "pop_white_nh": 1163351,
+      "pop_black_nh": 348073,
+      "pop_asian_nh": 426959,
+      "pop_other_nh": 115507
+    }
+  }
+}
+```
+
+**Example response** (unincorporated area):
+```json
+{
+  "status": "success",
+  "query": {
+    "lat": 33.98469,
+    "lon": -118.454214
+  },
+  "results": {
+    "neighborhood": "Marina del Rey",
+    "city": "Unincorporated",
+    "region": "Westside",
+    "law_enforcement": {
+      "agency": "LA County Sheriff",
+      "station": "Marina Del Rey"
+    },
+    "fire": {
+      "agency": "LA County Fire",
+      "station": "110"
+    },
+    "representation": {
+      "type": "county_supervisor",
+      "district": "2",
+      "representative": null
+    },
+    "zip_code": "90292",
     "school_district": "Los Angeles Unified"
   }
 }
@@ -69,13 +126,33 @@ GET /lookup
   "results": {
     "neighborhood": "Downtown",
     "city": "Los Angeles",
+    "region": "Central LA",
     "lapd_division": "Central",
     "lapd_bureau": "Central Bureau",
+    "lasd_station": null,
     "lafd_station": "Station 3",
     "lacofd_station": null,
     "council_district": "District 14",
+    "supervisor_district": "District 1",
     "neighborhood_council": "Downtown Los Angeles Neighborhood Council",
-    "school_district": "Los Angeles Unified"
+    "school_district": "Los Angeles Unified",
+    "zip_code": "90012",
+    "neighborhood_demographics": {
+      "population": 54239,
+      "pop_hispanic": 10234,
+      "pop_white_nh": 15678,
+      "pop_black_nh": 3456,
+      "pop_asian_nh": 22145,
+      "pop_other_nh": 2726
+    },
+    "city_demographics": {
+      "population": 3898747,
+      "pop_hispanic": 1844857,
+      "pop_white_nh": 1163351,
+      "pop_black_nh": 348073,
+      "pop_asian_nh": 426959,
+      "pop_other_nh": 115507
+    }
   }
 }
 ```
@@ -88,18 +165,109 @@ Each key in `results` represents a geographic layer. Value is the name of the fe
 |-----|-------------|---------------|
 | `neighborhood` | LA County neighborhood (comprehensive) | "Downtown", "Venice", "Pasadena" |
 | `city` | City or unincorporated area | "Los Angeles", "Santa Monica", "Unincorporated" |
+| `region` | Broad geographic region of LA County | "Central LA", "Westside", "San Fernando Valley" |
 | `lapd_division` | LAPD division (city only) | "Central", "Pacific", null (if outside LAPD) |
 | `lapd_bureau` | LAPD bureau (city only) | "Central Bureau", "West Bureau", null |
+| `lasd_station` | LA County Sheriff or municipal police station | "Lancaster", "Santa Monica", "Alhambra", null |
 | `lafd_station` | LA Fire Dept station (city only) | "Station 3", "Station 62", null |
 | `lacofd_station` | LA County Fire Dept station | "Station 23", "Station 69", null |
 | `council_district` | LA City Council district (city only) | "District 14", "District 11", null |
+| `supervisor_district` | LA County Supervisor district (county-wide) | "District 1", "District 5" |
 | `neighborhood_council` | Neighborhood council (city only) | "Downtown LA NC", null |
 | `school_district` | School district | "Los Angeles Unified", "Pasadena Unified" |
+| `zip_code` | ZIP code | "90012", "90210", "91103" |
+| `neighborhood_type` | Type of neighborhood/place | "segment-of-a-city", "standalone-city", "unincorporated-area" |
+| `neighborhood_city_slug` | Parent city slug (if segment) | "los-angeles", null |
+| `place_category` | Derived category for rendering | "la_city_neighborhood", "standalone_city", "unincorporated_area" |
+| `city_is_incorporated` | Whether city is incorporated | true, false |
+| `neighborhood_demographics` | 2020 Census demographics for the neighborhood | See demographics object below |
+| `city_demographics` | 2020 Census demographics for the city | See demographics object below |
+| `law_enforcement` | Nested object with law enforcement info | See service structures below |
+| `fire` | Nested object with fire department info | See service structures below |
+| `representation` | Nested object with elected representation info | See service structures below |
+
+**Service structures** (recommended):
+
+The API now returns nested objects for better UX. These provide a single place to find service information regardless of jurisdiction:
+
+**Law Enforcement:**
+```json
+{
+  "law_enforcement": {
+    "agency": "LAPD" | "LA County Sheriff" | "{City} Police Department" | null,
+    "division": "Central",     // LAPD only
+    "bureau": "West Bureau",   // LAPD only
+    "station": "Marina Del Rey",  // Sheriff or municipal police
+    "type": "municipal"        // Only for municipal police
+  }
+}
+```
+
+**Fire:**
+```json
+{
+  "fire": {
+    "agency": "LAFD" | "LA County Fire" | "Other",
+    "station": "Station 3" | "110" | null
+  }
+}
+```
+
+**Representation:**
+```json
+{
+  "representation": {
+    "type": "city_council" | "county_supervisor" | "other",
+    "district": "14" | "3",
+    "representative": "Katy Yaroslavsky" | null
+  }
+}
+```
+
+**Note:** Flat fields (`lapd_division`, `lafd_station`, etc.) are still returned for backwards compatibility but the nested structures above are recommended for new integrations.
+
+**Governance/type fields**:
+
+These fields help distinguish between LA City neighborhoods, standalone cities, and unincorporated areas:
+
+| Field | Values | Description |
+|-------|--------|-------------|
+| `neighborhood_type` | `segment-of-a-city`, `standalone-city`, `unincorporated-area`, null | Type classification from LA Times neighborhoods |
+| `neighborhood_city_slug` | `"los-angeles"`, other slug, null | Parent city for segments (e.g., "Beverly Grove" → "los-angeles") |
+| `place_category` | `la_city_neighborhood`, `standalone_city`, `unincorporated_area`, null | Derived category for easy frontend rendering |
+| `city_is_incorporated` | `true`, `false` | Whether the city is an incorporated municipality |
+
+**Example usage:**
+```javascript
+// Render appropriate label
+switch (result.place_category) {
+  case 'la_city_neighborhood':
+    return `${result.neighborhood} (City of LA)`;
+  case 'standalone_city':
+    return result.neighborhood;  // Just city name
+  case 'unincorporated_area':
+    return `${result.neighborhood} — Unincorporated LA County`;
+}
+```
+
+**Demographics object**:
+
+Each demographics object contains 2020 Census population data:
+
+| Field | Description |
+|-------|-------------|
+| `population` | Total population (all persons) |
+| `pop_hispanic` | Hispanic or Latino population (any race) |
+| `pop_white_nh` | White alone, not Hispanic |
+| `pop_black_nh` | Black or African American alone, not Hispanic |
+| `pop_asian_nh` | Asian alone, not Hispanic |
+| `pop_other_nh` | American Indian, Pacific Islander, other races, and two or more races (not Hispanic) |
 
 **Note**: Some values may be `null` if:
 - The coordinate is outside that layer's coverage (e.g., LAPD divisions only cover LA City)
 - The coordinate falls in a gap between features
 - The data layer doesn't have a feature at that location
+- Demographics data is not available for that layer
 
 #### Error responses
 

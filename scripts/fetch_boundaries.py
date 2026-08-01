@@ -30,6 +30,7 @@ from geo_utils import (
     load_config,
     ensure_wgs84,
     normalize_columns,
+    drop_shape_columns,
     add_area_if_polygon,
     add_metadata,
     validate_bbox,
@@ -126,6 +127,9 @@ def process_layer(layer_key: str, layer_config: dict) -> gpd.GeoDataFrame:
     
     # Normalize column names
     gdf = normalize_columns(gdf)
+    
+    # Drop redundant Shape columns (Shape_Length, Shape_Area, etc.)
+    gdf = drop_shape_columns(gdf)
     
     # Apply filter if specified (before other processing)
     if 'filter' in layer_config and layer_config['filter']:

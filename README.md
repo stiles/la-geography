@@ -35,11 +35,12 @@ All layers available as clean GeoJSON with standardized fields, area calculation
 **Source:** [LA Times Mapping LA project](https://github.com/datadesk/boundaries.latimes.com) (archived)  
 **Credit:** Created by [Ben Welsh](https://github.com/palewire) and the [LA Times Data Desk](https://github.com/datadesk). Though the original project was deprecated a few years ago, I'm excited to keep these essential boundaries active — and easily enriched with demographic data — in my own way. 
 
-### LAPD (police)
-- **Bureaus** (4): Central, South, Valley, West
-- **Divisions** (21): Pacific, Rampart, Central, etc.
-- **Reporting Districts** (~1,191): Finest-grained LAPD geography
-- **Station Locations** (21): Police station addresses and locations
+### Law enforcement
+- **LAPD Bureaus** (4): Central, South, Valley, West
+- **LAPD Divisions** (21): Pacific, Rampart, Central, etc.
+- **LAPD Reporting Districts** (~1,191): Finest-grained LAPD geography
+- **LAPD Station Locations** (21): Police station addresses and locations
+- **Sheriff & Municipal Police** (TBD): Sheriff station and municipal police boundaries for areas outside LA City (Alhambra Police, Santa Monica Police, Inglewood Police, Lancaster Sheriff, etc.)
 
 ### LA city
 - **City Boundary**: Official city limits
@@ -53,7 +54,10 @@ All layers available as clean GeoJSON with standardized fields, area calculation
 ### LA County
 - **County boundary**: LA County limits
 - **Cities & communities**: 88 cities + unincorporated areas
+- **Supervisor Districts** (5): LA County Board of Supervisors districts
+- **ZIP Codes** (~313): ZIP Code Tabulation Areas for LA County
 - **School Districts**: 85 school districts (Elementary, High School, and Unified)
+- **Parcels**: 2.4 million property records on the county's [ GIS portal](https://geohub.lacity.org/documents/4d67b154ae614d219c58535659128e71/about). *Not included here because of its size*
 
 ### Fire Departments
 - **LA County Fire - Station Boundaries** (174): LA County Fire station service areas
@@ -106,8 +110,9 @@ make apportion-census
 ```bash
 # Example: What's at this location?
 curl "https://api.stilesdata.com/la-geography/lookup?lat=34.0665304&lon=-118.3718048"
+```
 
-# Response includes all layers
+```json
 {
   "status": "success",
   "query": {
@@ -117,31 +122,41 @@ curl "https://api.stilesdata.com/la-geography/lookup?lat=34.0665304&lon=-118.371
   "results": {
     "neighborhood": "Beverly Grove",
     "city": "Los Angeles",
-    "lapd_division": "Wilshire",
-    "lapd_bureau": "West Bureau",
-    "lafd_station": "Fire Station 61",
-    "lacofd_station": "N/A (LAFD jurisdiction)",
-    "council_district": "5 - Katy Yaroslavsky",
-    "neighborhood_council": "Mid City West CC",
+    "region": "Central La",
+    "law_enforcement": {
+      "agency": "LAPD",
+      "division": "Wilshire",
+      "bureau": "West Bureau"
+    },
+    "fire": {
+      "agency": "LAFD",
+      "station": "Fire Station 61"
+    },
+    "representation": {
+      "type": "city_council",
+      "district": "5",
+      "representative": "Katy Yaroslavsky"
+    },
+    "zip_code": "90036",
     "school_district": "Los Angeles USD",
-    "election_precinct": "9002547A",
-    "airport_noise": null
-  }
-}
-
-# Example near LAX (in airport noise zone)
-curl "https://api.stilesdata.com/la-geography/lookup?lat=33.9416&lon=-118.4085"
-
-{
-  "results": {
-    "neighborhood": "Westchester",
-    "city": "Los Angeles",
-    "election_precinct": "9001390A",
-    "airport_noise": {
-      "name": "Los Angeles International",
-      "class": "70"
+    "neighborhood_type": "segment-of-a-city",
+    "place_category": "la_city_neighborhood",
+    "neighborhood_demographics": {
+      "population": 22121,
+      "pop_hispanic": 2158,
+      "pop_white_nh": 15893,
+      "pop_black_nh": 836,
+      "pop_asian_nh": 1909,
+      "pop_other_nh": 1325
+    },
+    "city_demographics": {
+      "population": 3898787,
+      "pop_hispanic": 1830264,
+      "pop_white_nh": 1125894,
+      "pop_black_nh": 322537,
+      "pop_asian_nh": 454536,
+      "pop_other_nh": 165557
     }
-    // ... other fields
   }
 }
 ```
@@ -207,6 +222,7 @@ All layers are publicly accessible via HTTPS. Click layer names to download:
 | [LAPD divisions](https://stilesdata.com/la-geography/lapd_divisions.geojson) | 0.84 MB |
 | [LAPD reporting districts](https://stilesdata.com/la-geography/lapd_reporting_districts.geojson) | 6.50 MB |
 | [LAPD station locations](https://stilesdata.com/la-geography/lapd_station_locations.geojson) | 0.01 MB |
+| [LA County Sheriff & municipal police boundaries](https://stilesdata.com/la-geography/lasd_station_boundaries.geojson) | TBD |
 | [LA city boundary](https://stilesdata.com/la-geography/la_city_boundary.geojson) | 0.40 MB |
 | [LA city neighborhoods](https://stilesdata.com/la-geography/la_city_neighborhoods.geojson) | 0.95 MB |
 | [LA city neighborhood councils](https://stilesdata.com/la-geography/la_city_neighborhood_councils.geojson) | 2.80 MB |
@@ -214,6 +230,8 @@ All layers are publicly accessible via HTTPS. Click layer names to download:
 | [LA city parks](https://stilesdata.com/la-geography/la_city_parks.geojson) | 5.00 MB |
 | [LA County boundary](https://stilesdata.com/la-geography/la_county_boundary.geojson) | 2.80 MB |
 | [LA County cities](https://stilesdata.com/la-geography/la_county_cities.geojson) | 13.53 MB |
+| [LA County supervisor districts](https://stilesdata.com/la-geography/la_county_supervisor_districts.geojson) | TBD |
+| [LA County ZIP codes](https://stilesdata.com/la-geography/la_county_zip_codes.geojson) | TBD |
 | [LA County school districts](https://stilesdata.com/la-geography/la_county_school_districts.geojson) | 4.30 MB |
 | [LA freeways](https://stilesdata.com/la-geography/la_freeways.geojson) | 1.62 MB |
 | [LA Metro lines](https://stilesdata.com/la-geography/la_metro_lines.geojson) | 0.44 MB |

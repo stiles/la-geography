@@ -166,6 +166,17 @@ def upload_layers(layer_name: str = None, include_demographics: bool = True):
 
         print()
         
+        # Upload simplified version if it exists (for API performance)
+        simplified_path = STANDARD_DIR / f"{layer}_simplified.geojson"
+        if simplified_path.exists():
+            simplified_s3_key = f"{S3_PREFIX}/{layer}_simplified.geojson"
+            if upload_file(s3_client, simplified_path, simplified_s3_key):
+                success_count += 1
+                print(f"  ✓ Also uploaded simplified version for API")
+            else:
+                fail_count += 1
+            print()
+        
         # Upload demographics file if it exists and demographics are enabled
         if include_demographics:
             demo_path = STANDARD_DIR / f"{layer}_demographics.parquet"
@@ -220,6 +231,23 @@ def download_layers(layer_name: str = None, include_demographics: bool = True):
             fail_count += 1
 
         print()
+        
+        # Try to download simplified version if it exists
+        simplified_s3_key = f"{S3_PREFIX}/{layer}_simplified.geojson"
+        simplified_path = STANDARD_DIR / f"{layer}_simplified.geojson"
+        
+        try:
+            s3_client.head_object(Bucket=S3_BUCKET, Key=simplified_s3_key)
+            # File exists, download it
+            if download_file(s3_client, simplified_s3_key, simplified_path):
+                success_count += 1
+                print(f"  ✓ Also downloaded simplified version")
+            else:
+                fail_count += 1
+            print()
+        except ClientError:
+            # Simplified file doesn't exist, skip silently
+            pass
         
         # Try to download demographics file if enabled
         if include_demographics:

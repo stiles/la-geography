@@ -13,6 +13,7 @@ Usage:
 """
 
 import argparse
+import shutil
 import sys
 from pathlib import Path
 
@@ -380,6 +381,41 @@ def main():
             process_la_regions(input_path, output_path)
         else:
             print(f"\n⚠️  Skipping la_regions: {input_path} not found")
+    
+    # Copy all other GeoJSON files that don't need custom processing
+    if args.layer == "all":
+        print(f"\n{'='*60}")
+        print("Copying remaining layers (no custom processing needed)")
+        print(f"{'='*60}")
+        
+        # Layers with custom processing (skip these)
+        custom_processed = {
+            'la_county_boundary.geojson',
+            'la_county_cities.geojson', 
+            'la_freeways.geojson',
+            'la_neighborhoods_comprehensive.geojson',  # Source for la_regions
+        }
+        
+        # Layers that are derived/generated (don't copy)
+        derived = {
+            'la_regions.geojson',  # Generated from la_neighborhoods_comprehensive
+        }
+        
+        # Find all GeoJSON files in raw that need copying
+        copied_count = 0
+        for raw_file in input_dir.glob('*.geojson'):
+            if raw_file.name not in custom_processed and raw_file.name not in derived:
+                output_file = output_dir / raw_file.name
+                
+                # Simple copy (files are already processed by fetch_boundaries.py)
+                shutil.copy2(raw_file, output_file)
+                print(f"  ✓ Copied {raw_file.name}")
+                copied_count += 1
+        
+        if copied_count > 0:
+            print(f"\n  Copied {copied_count} layer(s) without modification")
+        else:
+            print(f"\n  No additional layers to copy")
     
     print(f"\n{'='*60}")
     print("✓ PROCESSING COMPLETE")

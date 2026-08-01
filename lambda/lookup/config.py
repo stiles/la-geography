@@ -16,7 +16,7 @@ BASE_URL = "https://stilesdata.com/la-geography"
 LAYERS = [
     {
         "name": "la_neighborhoods_comprehensive",
-        "geojson_file": "la_neighborhoods_comprehensive.geojson",
+        "geojson_file": "la_neighborhoods_comprehensive_simplified.geojson",  # Simplified for API
         "response_key": "neighborhood",
         "name_field": "name",
         "id_field": "slug",
@@ -24,7 +24,7 @@ LAYERS = [
     },
     {
         "name": "la_county_cities",
-        "geojson_file": "la_county_cities.geojson",
+        "geojson_file": "la_county_cities_simplified.geojson",  # Simplified for API
         "response_key": "city",
         "name_field": "city_name",
         "id_field": "city_name",
@@ -47,6 +47,15 @@ LAYERS = [
         "description": "LAPD bureau",
     },
     {
+        "name": "lasd_station_boundaries",
+        "geojson_file": "lasd_station_boundaries_simplified.geojson",
+        "response_key": "lasd_station",
+        "name_field": "st_name",
+        "id_field": "station",
+        "description": "LA County Sheriff/municipal police station",
+        "extra_fields": ["s_type"],
+    },
+    {
         "name": "lafd_station_boundaries",
         "geojson_file": "lafd_station_boundaries.geojson",
         "response_key": "lafd_station",
@@ -56,7 +65,7 @@ LAYERS = [
     },
     {
         "name": "lacofd_station_boundaries",
-        "geojson_file": "lacofd_station_boundaries.geojson",
+        "geojson_file": "lacofd_station_boundaries_simplified.geojson",  # Simplified for API
         "response_key": "lacofd_station",
         "name_field": "stanum",
         "id_field": "stanum",
@@ -71,16 +80,32 @@ LAYERS = [
         "description": "LA City Council district",
     },
     {
+        "name": "la_county_supervisor_districts",
+        "geojson_file": "la_county_supervisor_districts.geojson",
+        "response_key": "supervisor_district",
+        "name_field": "label",
+        "id_field": "district",
+        "description": "LA County Supervisor district",
+    },
+    {
         "name": "la_city_neighborhood_councils",
-        "geojson_file": "la_city_neighborhood_councils.geojson",
+        "geojson_file": "la_city_neighborhood_councils_simplified.geojson",  # Simplified for API
         "response_key": "neighborhood_council",
         "name_field": "name",
         "id_field": "nc_id",
         "description": "LA City Neighborhood Council",
     },
     {
+        "name": "la_county_zip_codes",
+        "geojson_file": "la_county_zip_codes_simplified.geojson",  # Simplified for API
+        "response_key": "zip_code",
+        "name_field": "zipcode",
+        "id_field": "zipcode",
+        "description": "ZIP code",
+    },
+    {
         "name": "la_county_school_districts",
-        "geojson_file": "la_county_school_districts.geojson",
+        "geojson_file": "la_county_school_districts_simplified.geojson",  # Simplified for API
         "response_key": "school_district",
         "name_field": "label",
         "id_field": "abbr",
@@ -88,7 +113,7 @@ LAYERS = [
     },
     {
         "name": "la_county_election_precincts",
-        "geojson_file": "la_county_election_precincts.geojson",
+        "geojson_file": "la_county_election_precincts_simplified.geojson",  # Simplified for API
         "response_key": "election_precinct",
         "name_field": "precinct",
         "id_field": "precinct",
@@ -102,6 +127,30 @@ LAYERS = [
         "id_field": "objectid",
         "description": "Airport noise contour",
         "extra_fields": ["class"],
+    },
+    {
+        "name": "la_regions",
+        "geojson_file": "la_regions.geojson",
+        "response_key": "region",
+        "name_field": "name",
+        "id_field": "slug",
+        "description": "LA County region",
+    },
+]
+
+# Layers with demographics to load (JSON files)
+DEMOGRAPHICS_LAYERS = [
+    {
+        "name": "la_neighborhoods_comprehensive",
+        "json_file": "la_neighborhoods_comprehensive_demographics.json",
+    },
+    {
+        "name": "la_county_cities",
+        "json_file": "la_county_cities_demographics.json",
+    },
+    {
+        "name": "la_regions",
+        "json_file": "la_regions_demographics.json",
     },
 ]
 

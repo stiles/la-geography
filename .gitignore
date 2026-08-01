@@ -40,3 +40,9 @@ htmlcov/
 # Secrets (Census API key)
 .census_api_key
 
+# Planning and internal documentation
+PLANNING*.md
+*DEPLOYMENT*.md
+*DEPLOYED*.md
+*UPDATE*.md
+

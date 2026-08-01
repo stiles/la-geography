@@ -187,39 +187,36 @@ la_county_cities:
     Field city_type distinguishes 'City' vs 'Unincorporated'
     Many unincorporated areas dissolve into single "Unincorporated" feature
 
-# NOTE: Commented out - LA County MapServer returns HTML "Loading" page when accessed programmatically
-# Works in browser but requires session/authentication for programmatic access
-# la_county_supervisor_districts:
-#   source: arcgis
-#   url: https://arcgis.gis.lacounty.gov/arcgis/rest/services/LACounty_Dynamic/Political_Boundaries/MapServer/27
-#   description: LA County Board of Supervisors districts (5 districts, current)
-#   expected_count: 5
-#   geometry_type: polygon
-#   id_field: district
-#   name_field: label
-#   source_org: LA County Registrar-Recorder/County Clerk
-#   notes: |
-#     Current supervisorial district boundaries
-#     Five supervisorial districts representing LA County
-#     Layer ID 27 on arcgis.gis.lacounty.gov (not public.gis subdomain)
-#     Alternative endpoints tried:
-#     - MapServer/26 on public.gis.lacounty.gov (failed)
-#     - MapServer/27 on arcgis.gis.lacounty.gov (browser-only)
+la_county_supervisor_districts:
+  source: arcgis
+  url: https://arcgis.gis.lacounty.gov/arcgis/rest/services/LACounty_Dynamic/Political_Boundaries/MapServer/27
+  description: LA County Board of Supervisors districts (5 districts, current)
+  expected_count: 5
+  geometry_type: polygon
+  id_field: district
+  name_field: label
+  source_org: LA County Registrar-Recorder/County Clerk
+  notes: |
+    Current supervisorial district boundaries
+    Five supervisorial districts representing LA County
+    Layer ID 27 on arcgis.gis.lacounty.gov (not public.gis subdomain)
+    Alternative endpoints tried:
+    - MapServer/26 on public.gis.lacounty.gov (failed)
+    - MapServer/27 on arcgis.gis.lacounty.gov (browser-only)
 
-# NOTE: Commented out - LA County dynamic MapServer returning HTML instead of JSON
-# la_county_zip_codes:
-#   source: arcgis
-#   url: https://public.gis.lacounty.gov/public/rest/services/LACounty_Dynamic/Administrative_Boundaries/MapServer/5
-#   description: ZIP Code boundaries in LA County
-#   expected_count: null  # TBD - will determine after first fetch
-#   expected_tolerance: 50
-#   geometry_type: polygon
-#   id_field: zipcode
-#   name_field: zipcode
-#   source_org: LA County
-#   notes: |
-#     ZIP Code Tabulation Areas (ZCTAs) for LA County
-#     Useful for demographic and spatial analysis
+la_county_zip_codes:
+  source: arcgis
+  url: https://public.gis.lacounty.gov/public/rest/services/LACounty_Dynamic/Administrative_Boundaries/MapServer/5
+  description: ZIP Code boundaries in LA County
+  expected_count: 313
+  expected_tolerance: 50
+  geometry_type: polygon
+  id_field: zipcode
+  name_field: zipcode
+  source_org: LA County
+  notes: |
+    ZIP Code Tabulation Areas (ZCTAs) for LA County
+    Useful for demographic and spatial analysis
 
 # =============================================================================
 # SCHOOLS
@@ -327,22 +324,6 @@ lafd_station_boundaries:
     Area range: 1.28 - 14.99 sq mi per station
     Data as of April 2021
 
-# NOTE: Commented out - need correct REST endpoint from OpenData portal
-# lafd_districts:
-#   source: arcgis
-#   url: https://services5.arcgis.com/7nsPwEMP38bSkCjy/arcgis/rest/services/LAFD_Battalions/FeatureServer/3
-#   description: LA Fire Department district boundaries
-#   expected_count: null  # TBD - will determine after first fetch
-#   expected_tolerance: 20
-#   geometry_type: polygon
-#   id_field: objectid
-#   name_field: district
-#   source_org: LA Fire Department
-#   notes: |
-#     LAFD operational districts with district, battalion, and division IDs
-#     Different from LA County Fire Department
-#     OpenData URL: https://data-lahub.opendata.arcgis.com/datasets/691409b93f8d4d9e81f9a593c53ed069_3
-
 # =============================================================================
 # PUBLIC SAFETY - POLICE
 # =============================================================================
@@ -360,6 +341,30 @@ lapd_station_locations:
     Point locations of 21 LAPD division stations
     Includes division name, location address, and precinct number
     Complements the existing LAPD division boundaries layer
+
+lasd_station_boundaries:
+  source: arcgis
+  url: https://arcgis.gis.lacounty.gov/arcgis/rest/services/Sheriff/RD/MapServer/7
+  description: LA County Sheriff and municipal police station boundaries (all law enforcement jurisdictions)
+  expected_count: null  # TBD - will determine after first fetch
+  expected_tolerance: 20
+  geometry_type: polygon
+  id_field: station
+  name_field: st_name
+  source_org: LA County Sheriff's Department
+  notes: |
+    Sheriff station and municipal police department boundaries for LA County.
+    Covers areas outside LA City (LAPD jurisdiction).
+    Includes Sheriff stations (e.g., Lancaster, West Hollywood) and city police departments
+    (e.g., Alhambra Police, Santa Monica Police, Inglewood Police, Pasadena Police).
+    Fields:
+      - ST_NAME: Station/department name (e.g., "Alhambra", "Santa Monica", "Lancaster")
+      - S_TYPE: Type ("Police" for municipal, "Sheriff" for Sheriff stations)
+      - STATION: Full name (e.g., "Alhambra Police", "Lancaster Sheriff Station")
+      - S_ADDR1, S_ADDR2: Station address
+      - S_PHONE, S_FAX: Contact info
+      - OMEGA_LABEL: Short label for maps
+    Essential for providing law enforcement info for locations outside LAPD jurisdiction.
 
 # =============================================================================
 # AIRPORTS
@@ -423,15 +428,6 @@ la_county_election_precincts:
       - SerialNumber: Precinct serial number
     Precincts are consolidated for election administration purposes
     Range: 0.00 - 220.73 sq mi per precinct
-
-# NOTE: Commented out - LA County dynamic MapServer service returning HTML instead of JSON
-# Requires authentication - not publicly accessible
-# la_county_public_safety_jurisdictions:
-#   source: arcgis
-#   url: https://public.gis.lacounty.gov/public/rest/services/LACounty_Dynamic/Administrative_Boundaries/MapServer/9
-#   description: Public safety jurisdictions (Sheriff, LAPD, city police)
-#   expected_count: null
-#   geometry_type: polygon
 
 # =============================================================================
 # CENSUS DATA

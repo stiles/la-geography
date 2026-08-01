@@ -74,6 +74,35 @@ def normalize_columns(gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
     return gdf
 
 
+def drop_shape_columns(gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
+    """
+    Drop redundant Shape_Length, Shape_Area, Shape.STLength(), Shape.STArea() columns.
+    
+    These are auto-calculated by ArcGIS and aren't needed since we calculate
+    area_sqmi ourselves using accurate projections.
+    
+    Args:
+        gdf: GeoDataFrame with potential shape columns
+    
+    Returns:
+        GeoDataFrame with shape columns removed
+    """
+    # Patterns to match (case-insensitive after normalization)
+    shape_cols_to_drop = [
+        'shape_length', 'shape_area', 
+        'shape__length', 'shape__area',
+        'shape.stlength()', 'shape.starea()',
+    ]
+    
+    # Find columns to drop
+    cols_to_drop = [col for col in gdf.columns if col.lower() in shape_cols_to_drop]
+    
+    if cols_to_drop:
+        gdf = gdf.drop(columns=cols_to_drop)
+    
+    return gdf
+
+
 def add_area_if_polygon(gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
     """
     Add area_sqmi column if GeoDataFrame contains polygons.

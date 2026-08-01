@@ -10,6 +10,7 @@ help:
 	@echo "Available targets:"
 	@echo "  fetch        - Fetch raw layers from configured sources"
 	@echo "  standardize  - Clean and normalize raw data (process_raw.py)"
+	@echo "  simplify     - Create simplified neighborhoods GeoJSON for web mapping"
 	@echo "  s3-upload    - Upload processed layers to S3"
 	@echo "  s3-download  - Download layers from S3"
 	@echo "  s3-list      - List available layers in S3"
@@ -45,6 +46,12 @@ standardize:
 	@echo "Standardizing layers..."
 	python scripts/process_raw.py --input data/raw/ --output data/standard/
 	@echo "✓ Standardization complete"
+
+# Create simplified GeoJSON files for API performance
+simplify:
+	@echo "Creating simplified GeoJSON files for API..."
+	python scripts/simplify_neighborhoods.py --api-layers
+	@echo "✓ Simplification complete"
 
 # Validate geometry and counts
 # Note: validate.py not yet implemented - using basic validation from fetch
